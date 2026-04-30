@@ -52,16 +52,26 @@
 - ✅ `backend/README.md` — setup instructions
 - ✅ `frontend/README.md` — setup instructions
 
-### Slice 1 Manual Steps Remaining (for Jaafar)
 
-After unzipping, Jaafar must:
-1. Run `npm install` in `backend/`
-2. Copy `.env.example` to `.env` and fill in `MONGODB_URI` + `JWT_SECRET`
-3. Run `npm install` in `frontend/`
-4. Copy frontend `.env.example` to `.env`
-5. Run `npm run dev` in both folders
-6. Verify the splash screen shows "Backend API: Connected"
-7. Init git, push to GitHub
+### ✅ Slice 1 Manual Steps — ALL COMPLETED
+
+1. ✅ `npm install` in `backend/` (195 packages)
+2. ✅ Configured `backend/.env` with MongoDB URI + JWT secret
+3. ✅ Whitelisted IP in MongoDB Atlas
+4. ✅ Backend boots: "OUTDAR API SERVER STARTED" on port 5000
+5. ✅ /api/health responds with valid JSON
+6. ✅ `npm install` in `frontend/` (354 packages, 0 vulnerabilities)
+7. ✅ Configured `frontend/.env`
+8. ✅ Frontend renders splash screen at localhost:5173
+9. ✅ All three status cards show connected
+10. ✅ Git initialized + first commit
+11. ✅ Pushed to GitHub: https://github.com/madihjaafar32/outdar
+
+### 🐛 Issues Encountered & Resolved
+
+- **cloudinary version conflict** — fixed by downgrading to v1.41.3 (compatible with multer-storage-cloudinary v4)
+- **GitHub auth conflict** — old `Kumz32` credentials cached in Windows; cleared via Credential Manager and reauthenticated as `madihjaafar32`
+- **Branch name** — renamed `master` → `main` (modern convention)
 
 ---
 
