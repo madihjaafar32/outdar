@@ -1,0 +1,61 @@
+{
+  "app": {
+    "name": "OUTDAR",
+    "tagline": "Discover. Connect. Explore."
+  },
+  "nav": {
+    "home": "Home",
+    "browse": "Browse",
+    "myEvents": "My Events",
+    "create": "Create",
+    "messages": "Messages",
+    "profile": "Profile",
+    "search": "Search",
+    "notifications": "Notifications"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "city": "Your city",
+    "selectCity": "Select your city...",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "alreadyHaveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Keep me signed in for 30 days",
+    "agreeTerms": "I agree to OUTDAR's Terms and Privacy Policy",
+    "iJoinAs": "I'm joining as a...",
+    "discoverer": "Discoverer",
+    "discovererDesc": "Find & attend events",
+    "host": "Host",
+    "hostDesc": "Create my events"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Success!",
+    "back": "Back",
+    "next": "Next",
+    "seeAll": "See all"
+  },
+  "events": {
+    "free": "FREE",
+    "going": "going",
+    "interested": "interested",
+    "rsvp": "RSVP",
+    "trending": "Trending",
+    "thisWeek": "This week",
+    "forYou": "For you"
+  }
+}
