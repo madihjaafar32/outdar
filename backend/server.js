@@ -20,7 +20,7 @@ import errorHandler from "./src/middleware/errorHandler.js";
 import notFound from "./src/middleware/notFound.js";
 
 // Import routes (will be added in upcoming slices)
-// import authRoutes from "./src/routes/auth.routes.js";
+ import authRoutes from "./src/routes/auth.routes.js";
 // import userRoutes from "./src/routes/user.routes.js";
 // import eventRoutes from "./src/routes/event.routes.js";
 
@@ -86,8 +86,8 @@ app.get("/", (req, res) => {
   });
 });
 
-// API routes (will be wired up in upcoming slices)
-// app.use("/api/auth", authRoutes);
+
+ app.use("/api/auth", authRoutes);
 // app.use("/api/users", userRoutes);
 // app.use("/api/events", eventRoutes);
 

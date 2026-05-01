@@ -1,0 +1,82 @@
+### ============================================
+### OUTDAR Auth Tests
+### Click "Send Request" above each block to test
+### ============================================
+
+@baseUrl = http://localhost:5000/api
+
+### ----------------------------------------------
+### TEST 1: Health check (sanity)
+### Expected: 200 OK with success message
+### ----------------------------------------------
+GET {{baseUrl}}/health
+
+### ----------------------------------------------
+### TEST 2: Register a new user (YOU!)
+### Expected: 201 Created with user + token
+### ----------------------------------------------
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jaafar B.",
+  "email": "jaafar@outdar.test",
+  "password": "test1234",
+  "city": "Casablanca",
+  "role": "host"
+}
+
+### ----------------------------------------------
+### TEST 3: Try registering same email AGAIN
+### Expected: 400 — "already exists"
+### ----------------------------------------------
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jaafar B.",
+  "email": "jaafar@outdar.test",
+  "password": "test1234",
+  "city": "Casablanca"
+}
+
+### ----------------------------------------------
+### TEST 4: Login with correct credentials
+### Expected: 200 with user + token
+### IMPORTANT: Copy the token from the response,
+### you'll need it for TEST 6
+### ----------------------------------------------
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "jaafar@outdar.test",
+  "password": "test1234"
+}
+
+### ----------------------------------------------
+### TEST 5: Login with WRONG password
+### Expected: 401 — "Invalid email or password"
+### ----------------------------------------------
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "jaafar@outdar.test",
+  "password": "wrongpassword"
+}
+
+### ----------------------------------------------
+### TEST 6: Get current user (PROTECTED ROUTE!)
+### Expected: 200 with your user data
+### IMPORTANT: Replace YOUR_TOKEN_HERE with the
+### token you got from TEST 4 (login)
+### ----------------------------------------------
+GET {{baseUrl}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWY0MGEzOWI5NDlkYzllOGJjYjQ3NTQiLCJyb2xlIjoiaG9zdCIsImlhdCI6MTc3NzYwMzA0OSwiZXhwIjoxNzc4MjA3ODQ5fQ.Urntm-w_jTGOubOXK9IvaOlV-COKn42yvFA1j-HFS0A
+
+### ----------------------------------------------
+### TEST 7: Get current user WITHOUT token
+### Expected: 401 — "Not authenticated"
+### ----------------------------------------------
+GET {{baseUrl}}/auth/me
