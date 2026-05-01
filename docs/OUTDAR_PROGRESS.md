@@ -75,10 +75,20 @@
 
 ---
 
-## ⏳ Slice 2: Authentication — UPCOMING
+## 🟢 Current Status
 
-### Goal
-User can register, log in, and stay logged in. JWT issued on login. Frontend AuthContext + axios interceptor.
+**Active slice:** Slice 2 — Authentication
+**Status:** ✅ Complete
+**Last updated:** End of Slice 2
+**Next up:** Slice 3 — Events
+
+### Slice 2 — DONE ✅
+- Backend: User model, JWT utils, auth middleware, controller, routes
+- Frontend: Axios + interceptor, AuthContext, Login, Register, ProtectedRoute
+- All 7 backend tests passing
+- Real users registered in MongoDB Atlas
+- Session persistence works (refresh stays logged in)
+- Pushed to GitHub
 
 ### Will Build
 - [ ] User Mongoose model
