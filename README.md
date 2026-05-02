@@ -10,7 +10,7 @@ A social event discovery platform built for Morocco's youth — find local event
 
 ## 🎯 What is OUTDAR?
 
-OUTDAR ("outdoor" + Darija "had dar" / "outside the house" + "on the radar") is a MERN-stack web application that helps young Moroccans discover and join local events:
+OUTDAR ("outdoor" + Darija "dar" / "outside the house" + "on the radar") is a MERN-stack web application that helps young Moroccans discover and join local events:
 
 - 🔍 **Discover** — Browse events by category, location, and date
 - 👥 **Connect** — RSVP and chat with other attendees in real-time
@@ -62,7 +62,7 @@ See `backend/README.md` and `frontend/README.md` for setup instructions.
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js v18+ ([download](https://nodejs.org))
+- Node.js v18+ 
 - Git
 - A free [MongoDB Atlas](https://cloud.mongodb.com) account
 - (Optional) An Anthropic API key for AI features
@@ -104,7 +104,7 @@ Frontend runs on `http://localhost:5173`
 
 ## 👤 Author
 
-**Jaafar B.** ([@madihjaafar32](https://github.com/madihjaafar32))
+**Jaafar M.** ([@madihjaafar32](https://github.com/madihjaafar32))
 MERN stack developer · Casablanca, Morocco
 Final-year graduation project · 2026
 
