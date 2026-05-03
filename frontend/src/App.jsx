@@ -5,6 +5,7 @@ import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import Browse from "./pages/Browse.jsx";
+import EventDetail from "./pages/EventDetail.jsx";
 
 /**
  * Splash / Landing — public landing page
@@ -85,6 +86,15 @@ function App() {
   element={
     <ProtectedRoute>
       <Browse />
+    </ProtectedRoute>
+  }
+/>
+
+      <Route
+  path="/events/:id"
+  element={
+    <ProtectedRoute>
+      <EventDetail />
     </ProtectedRoute>
   }
 />
