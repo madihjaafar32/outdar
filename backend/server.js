@@ -20,7 +20,9 @@ import errorHandler from "./src/middleware/errorHandler.js";
 import notFound from "./src/middleware/notFound.js";
 
 // Import routes (will be added in upcoming slices)
- import authRoutes from "./src/routes/auth.routes.js";
+import authRoutes from "./src/routes/auth.routes.js";
+import eventRoutes from "./src/routes/event.routes.js";
+import categoryRoutes from "./src/routes/category.routes.js";
 // import userRoutes from "./src/routes/user.routes.js";
 // import eventRoutes from "./src/routes/event.routes.js";
 
@@ -33,7 +35,7 @@ import notFound from "./src/middleware/notFound.js";
 const app = express();
 const httpServer = createServer(app);
 
-// Socket.io setup
+// Socket.io setupf
 const io = new SocketServer(httpServer, {
   cors: {
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -87,7 +89,9 @@ app.get("/", (req, res) => {
 });
 
 
- app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/categories", categoryRoutes);
 // app.use("/api/users", userRoutes);
 // app.use("/api/events", eventRoutes);
 
