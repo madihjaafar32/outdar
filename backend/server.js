@@ -19,12 +19,13 @@ import connectDB from "./src/config/database.js";
 import errorHandler from "./src/middleware/errorHandler.js";
 import notFound from "./src/middleware/notFound.js";
 
-// Import routes (will be added in upcoming slices)
+// Import routes
 import authRoutes from "./src/routes/auth.routes.js";
 import eventRoutes from "./src/routes/event.routes.js";
 import categoryRoutes from "./src/routes/category.routes.js";
+import attendanceRoutes from "./src/routes/attendance.routes.js";
+import reviewRoutes from "./src/routes/review.routes.js";
 // import userRoutes from "./src/routes/user.routes.js";
-// import eventRoutes from "./src/routes/event.routes.js";
 
 // Import socket handlers (will be added in Slice 6)
 // import registerSocketHandlers from "./src/sockets/index.js";
@@ -35,7 +36,7 @@ import categoryRoutes from "./src/routes/category.routes.js";
 const app = express();
 const httpServer = createServer(app);
 
-// Socket.io setupf
+// Socket.io setup
 const io = new SocketServer(httpServer, {
   cors: {
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -43,7 +44,7 @@ const io = new SocketServer(httpServer, {
   },
 });
 
-// Make io accessible to routes (for emitting events from controllers)
+// Make io accessible to routes
 app.set("io", io);
 
 // ============================================
@@ -51,16 +52,18 @@ app.set("io", io);
 // ============================================
 app.use(helmet());
 app.use(compression());
+
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// HTTP request logger (only in development)
+// HTTP request logger (development only)
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -88,12 +91,13 @@ app.get("/", (req, res) => {
   });
 });
 
-
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/attendances", attendanceRoutes);
+app.use("/api/reviews", reviewRoutes);
 // app.use("/api/users", userRoutes);
-// app.use("/api/events", eventRoutes);
 
 // ============================================
 // Error handling
@@ -130,7 +134,9 @@ const startServer = async () => {
       console.log("║   🚪  OUTDAR API SERVER STARTED        ║");
       console.log("╠════════════════════════════════════════╣");
       console.log(`║   📡 Port:        ${PORT.toString().padEnd(20)} ║`);
-      console.log(`║   🌍 Environment: ${(process.env.NODE_ENV || "development").padEnd(20)} ║`);
+      console.log(
+        `║   🌍 Environment: ${(process.env.NODE_ENV || "development").padEnd(20)} ║`
+      );
       console.log(`║   🔗 URL:         http://localhost:${PORT}  ║`);
       console.log("╚════════════════════════════════════════╝");
       console.log("");
@@ -146,12 +152,13 @@ startServer();
 // Graceful shutdown
 process.on("SIGTERM", () => {
   console.log("👋 SIGTERM received, shutting down gracefully");
+
   httpServer.close(() => {
     console.log("✅ Server closed");
     process.exit(0);
   });
 });
 
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason) => {
   console.error("❌ Unhandled Rejection:", reason);
 });
