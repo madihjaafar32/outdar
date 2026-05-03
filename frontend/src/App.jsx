@@ -4,6 +4,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
+import Browse from "./pages/Browse.jsx";
 
 /**
  * Splash / Landing — public landing page
@@ -78,6 +79,15 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+  path="/browse"
+  element={
+    <ProtectedRoute>
+      <Browse />
+    </ProtectedRoute>
+  }
+/>
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
