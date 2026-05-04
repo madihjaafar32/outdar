@@ -11,6 +11,7 @@ import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import messageRoutes from "./src/routes/message.routes.js";
 
 // Load environment variables BEFORE anything else
 dotenv.config();
@@ -28,7 +29,7 @@ import reviewRoutes from "./src/routes/review.routes.js";
 // import userRoutes from "./src/routes/user.routes.js";
 
 // Import socket handlers (will be added in Slice 6)
-// import registerSocketHandlers from "./src/sockets/index.js";
+import { initSocket } from "./src/sockets/index.js";
 
 // ============================================
 // Initialize app
@@ -97,6 +98,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/attendances", attendanceRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/messages", messageRoutes);
 // app.use("/api/users", userRoutes);
 
 // ============================================
@@ -108,16 +110,8 @@ app.use(errorHandler);
 // ============================================
 // Socket.io connection
 // ============================================
-io.on("connection", (socket) => {
-  console.log(`🔌 Socket connected: ${socket.id}`);
 
-  socket.on("disconnect", () => {
-    console.log(`❌ Socket disconnected: ${socket.id}`);
-  });
-});
-
-// Will register feature handlers in Slice 6
-// registerSocketHandlers(io);
+initSocket(io);
 
 // ============================================
 // Start server

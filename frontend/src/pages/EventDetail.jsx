@@ -621,8 +621,18 @@ function EventDetail() {
                 </div>
               </div>
 
-              {/* Share + Report */}
-              <div className="flex gap-2">
+              {/* Join Chat Button */}
+{rsvpStatus && (
+  <Link
+    to={`/events/${id}/chat`}
+    className="flex items-center justify-center gap-2 w-full py-3 bg-outdar-navy dark:bg-white text-white dark:text-outdar-navy rounded-xl font-semibold text-sm hover:-translate-y-0.5 transition-all mb-3"
+  >
+    💬 Join Event Chat
+  </Link>
+)}
+
+{/* Share + Report */}
+<div className="flex gap-2">
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
