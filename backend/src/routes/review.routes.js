@@ -19,4 +19,4 @@ router.get("/event/:eventId", getEventReviews);
 router.get("/my-review/:eventId", requireAuth, getMyReview);
 router.delete("/:id", requireAuth, deleteReview);
 
-export default router;
+export default router; 

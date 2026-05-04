@@ -33,4 +33,5 @@ function StarRating({ rating, onRate, size = "md", showNumber = false }) {
   );
 }
 
+
 export default StarRating;
