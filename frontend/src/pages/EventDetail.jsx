@@ -1,6 +1,6 @@
 /**
  * Event Detail Page
- * Full event info, host card, REAL RSVP, attendees, mini map
+ * Full event info, host card, REAL RSVP, attendees, reviews, mini map
  */
 
 import { useState, useEffect } from "react";
@@ -11,6 +11,10 @@ import { rsvp, getMyStatus, getEventAttendees } from "../services/attendance.ser
 import { useAuth } from "../context/AuthContext.jsx";
 import { createReview, getEventReviews, getMyReview } from "../services/review.service.js";
 import StarRating from "../components/common/StarRating.jsx";
+
+import BubblesBg from "../components/common/BubblesBg.jsx";
+import BrandLogo from "../components/common/BrandLogo.jsx";
+import ThemeToggle from "../components/common/ThemeToggle.jsx";
 
 const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString("en-GB", {
@@ -47,7 +51,6 @@ function EventDetail() {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
 
-  // Fetch event + my RSVP status + attendees + reviews
   useEffect(() => {
     setIsLoading(true);
 
@@ -72,29 +75,22 @@ function EventDetail() {
       });
   }, [id, user]);
 
-  // Real RSVP handler
   const handleRSVP = async (status) => {
     if (!user) {
       navigate("/login");
       return;
     }
-
     setIsRsvping(true);
     setRsvpMessage("");
 
     try {
       const res = await rsvp(event._id, status);
       setRsvpStatus(res.data.status === "cancelled" ? null : res.data.status);
-      setRsvpMessage(res.message);
-
-      // Refresh event counts
+      setRsvpMessage(res.data.message);
       const eventRes = await getEvent(id);
       setEvent(eventRes.data.event);
-
-      // Refresh attendees list
       const attendeesRes = await getEventAttendees(id);
       setAttendees(attendeesRes.data);
-
     } catch (err) {
       setRsvpMessage(err.response?.data?.message || "Something went wrong");
     } finally {
@@ -102,27 +98,22 @@ function EventDetail() {
     }
   };
 
-  // Review submit handler
   const handleReviewSubmit = async () => {
     if (reviewRating === 0) {
       setReviewMessage("Please select a star rating!");
       return;
     }
-
     setIsSubmittingReview(true);
     setReviewMessage("");
 
     try {
       await createReview(event._id, reviewRating, reviewComment);
       setReviewMessage("Review submitted! 🌟");
-
-      // Refresh reviews + event rating
       const [reviewsRes, eventRes, myReviewRes] = await Promise.all([
         getEventReviews(id),
         getEvent(id),
         getMyReview(id),
       ]);
-
       setReviews(reviewsRes.data.reviews);
       setEvent(eventRes.data.event);
       setMyReview(myReviewRes.data.review);
@@ -137,7 +128,6 @@ function EventDetail() {
 
   const eventIsPast = event ? new Date(event.date) < new Date() : false;
   const canReview = eventIsPast && rsvpStatus && !myReview;
-
   const isFree = event?.price === 0;
   const isFull = event?.attendeeCount >= event?.capacity;
   const spotsLeft = event ? event.capacity - event.attendeeCount : 0;
@@ -146,7 +136,7 @@ function EventDetail() {
   // ── Loading ──────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50/30 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-outdar-red/20 border-t-outdar-red rounded-full animate-spin"></div>
           <p className="font-mono text-sm text-gray-500 dark:text-gray-400">Loading event...</p>
@@ -158,7 +148,7 @@ function EventDetail() {
   // ── Error ─────────────────────────────────────────────────
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-6">
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50/30 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 flex items-center justify-center px-6">
         <div className="text-center">
           <div className="text-6xl mb-4">🚪</div>
           <h2 className="font-display font-bold text-2xl text-gray-900 dark:text-white mb-2">
@@ -167,7 +157,7 @@ function EventDetail() {
           <p className="text-gray-500 dark:text-gray-400 mb-6">{error}</p>
           <Link
             to="/browse"
-            className="px-6 py-3 bg-outdar-red text-white rounded-xl font-semibold text-sm hover:-translate-y-0.5 transition-all"
+            className="px-6 py-3 bg-outdar-red text-white rounded-xl font-semibold text-sm hover:-translate-y-0.5 hover:shadow-red transition-all"
           >
             ← Back to Browse
           </Link>
@@ -177,47 +167,57 @@ function EventDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50/20 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 transition-colors duration-500 relative overflow-hidden">
 
-      {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors"
-        >
-          ← Back
-        </button>
+      <BubblesBg variant="warm" subtle />
+
+      {/* ── Frosted Navbar ── */}
+      <nav className="sticky top-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border-b border-gray-200/50 dark:border-slate-700/50 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors group"
+          >
+            <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+            Back
+          </button>
+          <div className="w-px h-5 bg-gray-200 dark:bg-slate-700"></div>
+          <BrandLogo size="sm" to="/home" />
+        </div>
+
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-outdar-red flex items-center justify-center text-base">🚪</div>
-          <span className="font-display font-extrabold text-base text-gray-900 dark:text-white">OUTDAR</span>
+          <ThemeToggle />
         </div>
       </nav>
 
       {/* ── Hero Image ── */}
-      <div className="relative w-full h-72 md:h-96 overflow-hidden">
+      <div className="relative w-full h-72 md:h-[28rem] overflow-hidden">
         <img
           src={event.image || `https://picsum.photos/seed/${event._id}/1200/600`}
           alt={event.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+        {/* Dual gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent"></div>
 
-        <div className="absolute bottom-4 left-4 flex items-center gap-2">
+        {/* Badges */}
+        <div className="absolute bottom-5 left-5 flex flex-wrap items-center gap-2">
           {event.category && (
             <span
-              className="px-3 py-1.5 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur"
-              style={{ backgroundColor: event.category.color + "dd" }}
+              className="px-3 py-1.5 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-md"
+              style={{ backgroundColor: event.category.color + "ee" }}
             >
               {event.category.icon} {event.category.name}
             </span>
           )}
           <span className={`px-3 py-1.5 text-white text-xs font-bold rounded-full shadow-lg ${
-            isFree ? "bg-outdar-green" : "bg-outdar-navy/80 backdrop-blur"
+            isFree ? "bg-outdar-green" : "bg-outdar-navy/80 backdrop-blur-md"
           }`}>
             {isFree ? "FREE" : `${event.price} MAD`}
           </span>
           {isFull && (
-            <span className="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-lg">
+            <span className="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse-red">
               FULL
             </span>
           )}
@@ -225,24 +225,24 @@ function EventDetail() {
       </div>
 
       {/* ── Main Content ── */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* ── LEFT: Event Info ── */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 animate-slide-up">
 
             {/* Title + meta */}
             <div>
-              <h1 className="font-display font-extrabold text-3xl md:text-4xl text-gray-900 dark:text-white leading-tight mb-4">
+              <h1 className="font-display font-extrabold text-3xl md:text-4xl text-gray-900 dark:text-white leading-tight mb-5 tracking-tight">
                 {event.title}
               </h1>
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 text-sm">
-                  <span className="w-8 h-8 bg-outdar-red/10 rounded-lg flex items-center justify-center flex-shrink-0">📅</span>
+                  <span className="w-9 h-9 bg-outdar-red/10 dark:bg-outdar-red/20 rounded-xl flex items-center justify-center flex-shrink-0">📅</span>
                   <span className="font-medium text-gray-900 dark:text-white">{formatDate(event.date)}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <span className="w-8 h-8 bg-outdar-sky/10 rounded-lg flex items-center justify-center flex-shrink-0">⏰</span>
+                  <span className="w-9 h-9 bg-outdar-sky/10 dark:bg-outdar-sky/20 rounded-xl flex items-center justify-center flex-shrink-0">⏰</span>
                   <span className="font-medium text-gray-900 dark:text-white">
                     {formatTime(event.date)}
                     {event.duration && (
@@ -254,7 +254,7 @@ function EventDetail() {
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <span className="w-8 h-8 bg-outdar-green/10 rounded-lg flex items-center justify-center flex-shrink-0">📍</span>
+                  <span className="w-9 h-9 bg-outdar-green/10 dark:bg-outdar-green/20 rounded-xl flex items-center justify-center flex-shrink-0">📍</span>
                   <div>
                     <span className="font-medium text-gray-900 dark:text-white">
                       {event.location?.venueName || event.location?.address}
@@ -268,30 +268,30 @@ function EventDetail() {
             </div>
 
             {/* About */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
-              <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-3">
-                About this event
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+              <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <span>📝</span> About this event
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm whitespace-pre-line">
                 {event.description}
               </p>
             </div>
 
             {/* Host card */}
             {event.host && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
-                <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-4">
-                  Hosted by
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+                <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <span>🎤</span> Hosted by
                 </h2>
                 <div className="flex items-center gap-4">
                   {event.host.avatar ? (
                     <img
                       src={event.host.avatar}
                       alt={event.host.name}
-                      className="w-14 h-14 rounded-2xl object-cover flex-shrink-0"
+                      className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 ring-2 ring-outdar-red/10"
                     />
                   ) : (
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-outdar-red to-outdar-orange flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-outdar-red to-outdar-orange flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-red">
                       {event.host.name?.[0]}
                     </div>
                   )}
@@ -323,13 +323,16 @@ function EventDetail() {
 
             {/* Who's going */}
             {attendees.going.length > 0 && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
-                <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-4">
-                  Who's going ({attendees.goingCount})
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm">
+                <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <span>👥</span> Who's going
+                  <span className="text-sm font-mono text-gray-400 dark:text-gray-500">
+                    ({attendees.goingCount})
+                  </span>
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {attendees.going.slice(0, 12).map((a) => (
-                    <div key={a._id} className="flex items-center gap-2 bg-gray-50 dark:bg-slate-700 rounded-full px-3 py-1.5">
+                    <div key={a._id} className="flex items-center gap-2 bg-gray-50 dark:bg-slate-700 rounded-full px-3 py-1.5 hover:-translate-y-0.5 transition-transform">
                       {a.user?.avatar ? (
                         <img src={a.user.avatar} alt={a.user.name} className="w-5 h-5 rounded-full object-cover" />
                       ) : (
@@ -355,10 +358,10 @@ function EventDetail() {
 
             {/* Mini Map */}
             {coords && coords.length === 2 && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-700">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-700 shadow-sm">
                 <div className="px-6 pt-6 pb-3">
-                  <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-1">
-                    Location
+                  <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                    <span>📍</span> Location
                   </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {event.location?.address}
@@ -391,10 +394,10 @@ function EventDetail() {
             )}
 
             {/* Reviews Section */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white">
-                  Reviews
+                <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                  <span>⭐</span> Reviews
                 </h2>
                 <div className="flex items-center gap-2">
                   {event.reviewCount > 0 && (
@@ -413,9 +416,9 @@ function EventDetail() {
 
               {/* Write a review */}
               {canReview && (
-                <div className="mb-6 p-4 bg-gray-50 dark:bg-slate-700 rounded-xl border border-gray-200 dark:border-slate-600">
+                <div className="mb-6 p-5 bg-gradient-to-br from-outdar-yellow/10 to-outdar-orange/10 dark:from-outdar-yellow/5 dark:to-outdar-orange/5 rounded-xl border border-outdar-orange/20">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                    You attended this event — leave a review!
+                    🌟 You attended this event — leave a review!
                   </p>
                   <div className="mb-3">
                     <StarRating
@@ -429,7 +432,7 @@ function EventDetail() {
                     onChange={(e) => setReviewComment(e.target.value)}
                     placeholder="Share your experience... (optional)"
                     rows={3}
-                    className="w-full px-3 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-outdar-red resize-none"
+                    className="w-full px-3 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-outdar-red focus:ring-2 focus:ring-outdar-red/20 resize-none transition-all"
                   />
                   {reviewMessage && (
                     <p className="text-xs text-outdar-green font-medium mt-2">
@@ -439,7 +442,7 @@ function EventDetail() {
                   <button
                     onClick={handleReviewSubmit}
                     disabled={isSubmittingReview || reviewRating === 0}
-                    className="mt-3 px-5 py-2.5 bg-outdar-red text-white rounded-xl text-sm font-semibold hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="mt-3 px-5 py-2.5 bg-outdar-red text-white rounded-xl text-sm font-semibold hover:-translate-y-0.5 hover:shadow-red transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     {isSubmittingReview ? "Submitting..." : "Submit Review ⭐"}
                   </button>
@@ -450,7 +453,7 @@ function EventDetail() {
               {myReview && (
                 <div className="mb-4 p-4 bg-outdar-red/5 dark:bg-outdar-red/10 rounded-xl border border-outdar-red/20">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-outdar-red">Your review</p>
+                    <p className="text-xs font-semibold text-outdar-red uppercase tracking-wider">Your review</p>
                     <StarRating rating={myReview.rating} size="sm" />
                   </div>
                   {myReview.comment && (
@@ -514,39 +517,44 @@ function EventDetail() {
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-4">
 
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-md">
 
                 {/* Price */}
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <span className="font-display font-extrabold text-2xl text-gray-900 dark:text-white">
-                      {isFree ? "Free" : `${event.price} MAD`}
+                    <span className="font-display font-extrabold text-3xl text-gray-900 dark:text-white">
+                      {isFree ? (
+                        <span className="bg-gradient-to-br from-outdar-green to-outdar-sky bg-clip-text text-transparent">Free</span>
+                      ) : (
+                        <>
+                          {event.price}
+                          <span className="text-base font-semibold text-gray-500 dark:text-gray-400 ml-1">MAD</span>
+                        </>
+                      )}
                     </span>
                     {!isFree && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">per person</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">per person</p>
                     )}
                   </div>
                   {event.category && (
-                    <span className="text-2xl">{event.category.icon}</span>
+                    <span className="text-3xl">{event.category.icon}</span>
                   )}
                 </div>
 
                 {/* Capacity bar */}
-                <div className="mb-4">
+                <div className="mb-5">
                   <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1.5">
-                    <span>👥 {event.attendeeCount} going</span>
-                    <span>{spotsLeft > 0 ? `${spotsLeft} spots left` : "Full"}</span>
+                    <span className="font-medium">👥 {event.attendeeCount} going</span>
+                    <span className={spotsLeft <= 5 && spotsLeft > 0 ? "text-outdar-orange font-semibold" : ""}>
+                      {spotsLeft > 0 ? `${spotsLeft} spots left` : "Full"}
+                    </span>
                   </div>
-                  <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2">
+                  <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
                     <div
-                      className="h-2 rounded-full transition-all duration-500"
+                      className="h-2 rounded-full transition-all duration-700"
                       style={{
                         width: `${Math.min(100, (event.attendeeCount / event.capacity) * 100)}%`,
-                        backgroundColor: isFull
-                          ? "#EF4444"
-                          : spotsLeft <= 5
-                          ? "#F4A261"
-                          : "#7CB342",
+                        backgroundColor: isFull ? "#EF4444" : spotsLeft <= 5 ? "#F4A261" : "#7CB342",
                       }}
                     ></div>
                   </div>
@@ -563,8 +571,8 @@ function EventDetail() {
                       disabled={isRsvping}
                       className={`w-full py-3.5 rounded-xl font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                         rsvpStatus === "going"
-                          ? "bg-outdar-green text-white shadow-sm"
-                          : "bg-outdar-red text-white hover:-translate-y-0.5 shadow-sm hover:shadow-md"
+                          ? "bg-outdar-green text-white shadow-md"
+                          : "bg-outdar-red text-white hover:-translate-y-0.5 shadow-red hover:shadow-red-lg"
                       }`}
                     >
                       {isRsvping ? (
@@ -596,9 +604,9 @@ function EventDetail() {
                   </button>
                 )}
 
-                {/* RSVP feedback message */}
+                {/* RSVP feedback */}
                 {rsvpMessage && (
-                  <p className={`text-xs text-center font-medium mt-3 ${
+                  <p className={`text-xs text-center font-medium mt-3 animate-fade-in ${
                     rsvpMessage.includes("wrong") || rsvpMessage.includes("error")
                       ? "text-red-500"
                       : "text-outdar-green"
@@ -608,7 +616,7 @@ function EventDetail() {
                 )}
 
                 {/* Date/time summary */}
-                <div className="border-t border-gray-100 dark:border-slate-700 mt-4 pt-4 space-y-1">
+                <div className="border-t border-gray-100 dark:border-slate-700 mt-5 pt-4 space-y-1.5">
                   <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                     <span>📅 {formatDate(event.date)}</span>
                   </div>
@@ -622,23 +630,23 @@ function EventDetail() {
               </div>
 
               {/* Join Chat Button */}
-{rsvpStatus && (
-  <Link
-    to={`/events/${id}/chat`}
-    className="flex items-center justify-center gap-2 w-full py-3 bg-outdar-navy dark:bg-white text-white dark:text-outdar-navy rounded-xl font-semibold text-sm hover:-translate-y-0.5 transition-all mb-3"
-  >
-    💬 Join Event Chat
-  </Link>
-)}
+              {rsvpStatus && (
+                <Link
+                  to={`/events/${id}/chat`}
+                  className="flex items-center justify-center gap-2 w-full py-3.5 bg-outdar-navy dark:bg-white text-white dark:text-outdar-navy rounded-xl font-semibold text-sm hover:-translate-y-0.5 hover:shadow-md transition-all"
+                >
+                  💬 Join Event Chat
+                </Link>
+              )}
 
-{/* Share + Report */}
-<div className="flex gap-2">
+              {/* Share + Report */}
+              <div className="flex gap-2">
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
                     alert("Link copied! 🔗");
                   }}
-                  className="flex-1 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:border-gray-400 transition-all"
+                  className="flex-1 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:border-outdar-sky hover:text-outdar-sky transition-all"
                 >
                   🔗 Share
                 </button>
@@ -655,6 +663,5 @@ function EventDetail() {
     </div>
   );
 }
-
 
 export default EventDetail;

@@ -8,6 +8,10 @@ import { Link } from "react-router-dom";
 import EventCard from "../components/events/EventCard.jsx";
 import { getEvents, getCategories } from "../services/event.service.js";
 
+import BubblesBg from "../components/common/BubblesBg.jsx";
+import BrandLogo from "../components/common/BrandLogo.jsx";
+import ThemeToggle from "../components/common/ThemeToggle.jsx";
+
 // Leaflet map (lazy loaded only when map view is active)
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -31,12 +35,12 @@ function Browse() {
 
   // Filters
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState(""); // slug
+  const [activeCategory, setActiveCategory] = useState("");
   const [freeOnly, setFreeOnly] = useState(false);
   const [activeCity, setActiveCity] = useState("");
 
   // View
-  const [view, setView] = useState("list"); // "list" | "map"
+  const [view, setView] = useState("list");
 
   const CITIES = ["", "Casablanca", "Rabat"];
 
@@ -59,7 +63,6 @@ function Browse() {
     if (freeOnly)       params.free     = true;
     if (activeCity)     params.city     = activeCity;
 
-    // Debounce search by 400ms
     const timer = setTimeout(() => {
       getEvents(params)
         .then((res) => {
@@ -83,7 +86,6 @@ function Browse() {
     };
   }, [search, activeCategory, freeOnly, activeCity]);
 
-  // ── Clear all filters ───────────────────────────────────
   const clearFilters = () => {
     setSearch("");
     setActiveCategory("");
@@ -93,60 +95,75 @@ function Browse() {
 
   const hasFilters = search || activeCategory || freeOnly || activeCity;
 
-  // ── Casablanca center as default map position ───────────
   const mapCenter = [33.5731, -7.5898];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-blue-50/30 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 transition-colors duration-500 relative overflow-hidden">
 
-      {/* Bubbles bg */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute w-96 h-96 -top-24 -right-24 bg-outdar-sky/10 rounded-full blur-3xl"></div>
-        <div className="absolute w-80 h-80 bottom-20 -left-20 bg-outdar-red/10 rounded-full blur-3xl"></div>
-      </div>
+      <BubblesBg variant="cool" subtle />
 
-      {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
-        <Link to="/home" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-outdar-red flex items-center justify-center text-lg">🚪</div>
-          <span className="font-display font-extrabold text-lg text-gray-900 dark:text-white">OUTDAR</span>
-        </Link>
-        <div className="flex items-center gap-3">
-          <Link to="/home" className="text-sm text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors">
-            Home
-          </Link>
-          <span className="text-sm font-semibold text-outdar-red border-b-2 border-outdar-red pb-0.5">
-            Browse
-          </span>
+      {/* ── Frosted Navbar ── */}
+      <nav className="sticky top-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border-b border-gray-200/50 dark:border-slate-700/50 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <BrandLogo size="sm" to="/home" />
+
+          <div className="hidden md:flex items-center gap-1">
+            <Link
+              to="/home"
+              className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-outdar-red hover:bg-outdar-red/5 px-3 py-1.5 rounded-lg transition-all"
+            >
+              Home
+            </Link>
+            <span className="text-sm font-semibold text-outdar-red bg-outdar-red/10 px-3 py-1.5 rounded-lg">
+              Browse
+            </span>
+            <Link
+              to="/ai"
+              className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-outdar-red hover:bg-outdar-red/5 px-3 py-1.5 rounded-lg transition-all"
+            >
+              AI Assistant
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="relative z-10 max-w-6xl mx-auto px-6 py-8">
 
         {/* ── Header ── */}
-        <div className="mb-6">
-          <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1">
-            Discover Events 🎟️
+        <div className="mb-6 animate-slide-up">
+          <h1 className="font-display font-extrabold text-3xl md:text-4xl text-gray-900 dark:text-white mb-1 tracking-tight">
+            Discover Events <span className="inline-block">🎟️</span>
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
-            {total > 0 ? `${total} events happening around you` : "Find your next adventure"}
+          <p className="text-gray-500 dark:text-gray-400">
+            {total > 0 ? (
+              <>
+                <span className="font-semibold text-outdar-red">{total}</span>
+                {" events happening around you"}
+              </>
+            ) : "Find your next adventure"}
           </p>
         </div>
 
         {/* ── Search bar ── */}
-        <div className="relative mb-4">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">🔍</span>
+        <div className="relative mb-4 group">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none transition-colors group-focus-within:text-outdar-red">
+            🔍
+          </span>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search events, venues, vibes..."
-            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-2xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-outdar-red focus:ring-4 focus:ring-outdar-red/10 transition-all"
+            className="w-full pl-12 pr-12 py-3.5 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-2xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-outdar-red focus:ring-4 focus:ring-outdar-red/10 transition-all shadow-sm"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-400 hover:bg-outdar-red hover:text-white flex items-center justify-center text-xs transition-all"
             >
               ✕
             </button>
@@ -164,8 +181,8 @@ function Browse() {
                 onClick={() => setActiveCity(city)}
                 className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
                   activeCity === city
-                    ? "bg-outdar-navy text-white dark:bg-white dark:text-outdar-navy"
-                    : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-gray-400"
+                    ? "bg-outdar-navy text-white dark:bg-white dark:text-outdar-navy shadow-sm"
+                    : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-outdar-navy dark:hover:border-white hover:-translate-y-0.5"
                 }`}
               >
                 {city || "🌍 All cities"}
@@ -173,7 +190,6 @@ function Browse() {
             ))}
           </div>
 
-          {/* Divider */}
           <div className="w-px h-5 bg-gray-200 dark:bg-slate-700"></div>
 
           {/* Free only toggle */}
@@ -181,8 +197,8 @@ function Browse() {
             onClick={() => setFreeOnly(!freeOnly)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
               freeOnly
-                ? "bg-outdar-green text-white"
-                : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-gray-400"
+                ? "bg-outdar-green text-white shadow-sm hover:-translate-y-0.5"
+                : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-outdar-green hover:text-outdar-green hover:-translate-y-0.5"
             }`}
           >
             🆓 Free only
@@ -192,20 +208,20 @@ function Browse() {
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="px-3 py-1.5 rounded-full text-xs font-semibold text-outdar-red border border-outdar-red/30 hover:bg-outdar-red/5 transition-all"
+              className="px-3 py-1.5 rounded-full text-xs font-semibold text-outdar-red border border-outdar-red/30 hover:bg-outdar-red hover:text-white transition-all"
             >
               ✕ Clear
             </button>
           )}
 
-          {/* View toggle — pushed to right */}
-          <div className="ml-auto flex items-center gap-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-1">
+          {/* View toggle */}
+          <div className="ml-auto flex items-center gap-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-1 shadow-sm">
             <button
               onClick={() => setView("list")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 view === "list"
                   ? "bg-outdar-red text-white shadow-sm"
-                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
+                  : "text-gray-500 dark:text-gray-400 hover:text-outdar-red"
               }`}
             >
               📋 List
@@ -215,7 +231,7 @@ function Browse() {
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 view === "map"
                   ? "bg-outdar-red text-white shadow-sm"
-                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
+                  : "text-gray-500 dark:text-gray-400 hover:text-outdar-red"
               }`}
             >
               🗺️ Map
@@ -224,13 +240,13 @@ function Browse() {
         </div>
 
         {/* ── Category chips ── */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
           <button
             onClick={() => setActiveCategory("")}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               activeCategory === ""
-                ? "bg-outdar-red text-white shadow-sm"
-                : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-outdar-red hover:text-outdar-red"
+                ? "bg-outdar-red text-white shadow-red"
+                : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-outdar-red hover:text-outdar-red hover:-translate-y-0.5"
             }`}
           >
             All
@@ -238,17 +254,15 @@ function Browse() {
           {categories.map((cat) => (
             <button
               key={cat._id}
-              onClick={() => setActiveCategory(
-                activeCategory === cat.slug ? "" : cat.slug
-              )}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+              onClick={() => setActiveCategory(activeCategory === cat.slug ? "" : cat.slug)}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:-translate-y-0.5 ${
                 activeCategory === cat.slug
-                  ? "text-white shadow-sm"
+                  ? "text-white shadow-md"
                   : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-slate-700 hover:border-gray-400"
               }`}
               style={
                 activeCategory === cat.slug
-                  ? { backgroundColor: cat.color }
+                  ? { backgroundColor: cat.color, boxShadow: `0 4px 12px -2px ${cat.color}66` }
                   : {}
               }
             >
@@ -261,7 +275,6 @@ function Browse() {
         {/* ── LIST VIEW ── */}
         {view === "list" && (
           <>
-            {/* Loading skeletons */}
             {isLoading && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
@@ -277,9 +290,8 @@ function Browse() {
               </div>
             )}
 
-            {/* Error */}
             {error && (
-              <div className="p-6 bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-2xl text-center">
+              <div className="p-6 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-2xl text-center">
                 <p className="text-red-600 dark:text-red-400">⚠️ {error}</p>
                 <button
                   onClick={() => setSearch("")}
@@ -290,18 +302,22 @@ function Browse() {
               </div>
             )}
 
-            {/* Events grid */}
             {!isLoading && !error && events.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {events.map((event) => (
-                  <EventCard key={event._id} event={event} />
+                {events.map((event, i) => (
+                  <div
+                    key={event._id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${i * 40}ms` }}
+                  >
+                    <EventCard event={event} />
+                  </div>
                 ))}
               </div>
             )}
 
-            {/* Empty state */}
             {!isLoading && !error && events.length === 0 && (
-              <div className="text-center py-20">
+              <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700">
                 <div className="text-6xl mb-4">🔍</div>
                 <h3 className="font-display font-bold text-xl text-gray-900 dark:text-white mb-2">
                   No events found
@@ -311,7 +327,7 @@ function Browse() {
                 </p>
                 <button
                   onClick={clearFilters}
-                  className="px-6 py-3 bg-outdar-red text-white rounded-xl font-semibold text-sm hover:-translate-y-0.5 transition-all"
+                  className="px-6 py-3 bg-outdar-red text-white rounded-xl font-semibold text-sm hover:-translate-y-0.5 hover:shadow-red transition-all"
                 >
                   Clear all filters
                 </button>
@@ -322,7 +338,7 @@ function Browse() {
 
         {/* ── MAP VIEW ── */}
         {view === "map" && (
-          <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 shadow-sm">
+          <div className="rounded-3xl overflow-hidden border border-gray-200 dark:border-slate-700 shadow-sm">
             <MapContainer
               center={mapCenter}
               zoom={12}
@@ -347,12 +363,8 @@ function Browse() {
                           alt={event.title}
                           className="w-full h-24 object-cover rounded-lg mb-2"
                         />
-                        <p className="font-bold text-sm text-gray-900 mb-1">
-                          {event.title}
-                        </p>
-                        <p className="text-xs text-gray-500 mb-2">
-                          📍 {event.location?.venueName}
-                        </p>
+                        <p className="font-bold text-sm text-gray-900 mb-1">{event.title}</p>
+                        <p className="text-xs text-gray-500 mb-2">📍 {event.location?.venueName}</p>
                         <p className="text-xs font-semibold text-outdar-red mb-2">
                           {event.price === 0 ? "FREE" : `${event.price} MAD`}
                         </p>
@@ -369,7 +381,6 @@ function Browse() {
               })}
             </MapContainer>
 
-            {/* Events count on map */}
             <div className="bg-white dark:bg-slate-800 px-4 py-3 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 📍 Showing <span className="font-semibold text-gray-900 dark:text-white">{events.length}</span> events on map
