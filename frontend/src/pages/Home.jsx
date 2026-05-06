@@ -16,29 +16,50 @@ function Home() {
         <div className="absolute w-80 h-80 top-1/2 -right-24 bg-outdar-sky/10 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Navbar placeholder */}
+      {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-outdar-red flex items-center justify-center text-lg">🚪</div>
-          <span className="font-display font-extrabold text-lg text-gray-900 dark:text-white">OUTDAR</span>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-outdar-red flex items-center justify-center text-lg">🚪</div>
+            <span className="font-display font-extrabold text-lg text-gray-900 dark:text-white">OUTDAR</span>
+          </div>
+          {/* Nav links */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link to="/home" className="text-sm font-medium text-outdar-red border-b-2 border-outdar-red pb-0.5">
+              Home
+            </Link>
+            <Link to="/browse" className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors">
+              Browse
+            </Link>
+            {user?.role === "admin" && (
+              <Link to="/admin" className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors">
+                Admin
+              </Link>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
             Hey, <span className="font-semibold text-outdar-red">{user?.name?.split(" ")[0]}</span>!
           </span>
           <Link
-           to="/ai"
-           className="text-xs px-3 py-1.5 bg-outdar-red/10 border border-outdar-red/20 rounded-lg text-outdar-red font-semibold hover:bg-outdar-red hover:text-white transition-all"
-        >
-          🤖 AI
+            to="/ai"
+            className="text-xs px-3 py-1.5 bg-outdar-red/10 border border-outdar-red/20 rounded-lg text-outdar-red font-semibold hover:bg-outdar-red hover:text-white transition-all"
+          >
+            🤖 AI
           </Link>
-
+          <Link
+            to="/browse"
+            className="text-xs px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 dark:text-gray-400 hover:border-outdar-red hover:text-outdar-red transition-all"
+          >
+            Browse
+          </Link>
           <button
-  onClick={logout}
-  className="text-xs px-3 py-1.5 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 dark:text-gray-400 hover:border-outdar-red hover:text-outdar-red transition-all"
->
-  Logout
-</button>
+            onClick={logout}
+            className="text-xs px-3 py-1.5 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 dark:text-gray-400 hover:border-outdar-red hover:text-outdar-red transition-all"
+          >
+            Logout
+          </button>
         </div>
       </nav>
 
@@ -52,6 +73,31 @@ function Home() {
           <p className="text-gray-500 dark:text-gray-400">
             Here's what's happening around you
           </p>
+
+          {/* Quick nav */}
+        <div className="flex flex-wrap gap-3 mt-6 mb-8">
+          <Link to="/browse"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-outdar-red hover:text-outdar-red transition-all shadow-sm">
+            📅 Browse all events
+          </Link>
+          <Link to="/ai"
+            className="flex items-center gap-2 px-4 py-2.5 bg-outdar-red/5 border border-outdar-red/20 rounded-xl text-sm font-medium text-outdar-red hover:bg-outdar-red hover:text-white transition-all shadow-sm">
+            🤖 Ask AI for suggestions
+          </Link>
+          {user?.role === "host" || user?.role === "admin" ? (
+            <Link to="/events/create"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-outdar-green hover:text-outdar-green transition-all shadow-sm">
+              ➕ Create event
+            </Link>
+          ) : null}
+          {user?.role === "admin" && (
+            <Link to="/admin"
+              className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-outdar-sky hover:text-outdar-sky transition-all shadow-sm">
+              🛡️ Admin Panel
+            </Link>
+          )}
+        </div>
+        
         </div>
 
         {/* Events section */}
@@ -59,6 +105,12 @@ function Home() {
           <h2 className="font-display font-bold text-xl text-gray-900 dark:text-white">
             🔥 Upcoming Events
           </h2>
+          <Link
+            to="/browse"
+            className="text-sm text-outdar-red font-medium hover:underline"
+          >
+            See all →
+          </Link>
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {!isLoading && `${events.length} events`}
           </span>
