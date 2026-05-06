@@ -10,6 +10,7 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
+import adminRoutes from "./src/routes/admin.routes.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -103,6 +104,7 @@ app.use("/api/attendances", attendanceRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/admin", adminRoutes);
 // app.use("/api/users", userRoutes);
 
 // ============================================

@@ -8,6 +8,7 @@ import Browse from "./pages/Browse.jsx";
 import EventDetail from "./pages/EventDetail.jsx";
 import EventChat from "./pages/EventChat.jsx";
 import AIChat from "./pages/AIChat.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 
@@ -130,6 +131,14 @@ function App() {
   element={
     <ProtectedRoute>
       <AIChat />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/admin"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
     </ProtectedRoute>
   }
 />
