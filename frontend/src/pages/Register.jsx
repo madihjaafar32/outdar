@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
+import BubblesBg from "../components/common/BubblesBg.jsx";
+import BrandLogo from "../components/common/BrandLogo.jsx";
+import ThemeToggle from "../components/common/ThemeToggle.jsx";
+
 const MOROCCAN_CITIES = [
   "Casablanca",
   "Rabat",
@@ -20,7 +24,7 @@ function Register() {
   const { register } = useAuth();
 
   const [formData, setFormData] = useState({
-    role: "user", // "user" (Discoverer) or "host"
+    role: "user",
     name: "",
     email: "",
     password: "",
@@ -76,15 +80,31 @@ function Register() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
+
       {/* ============================================ */}
       {/* LEFT: Brand side                              */}
       {/* ============================================ */}
       <div className="relative bg-gradient-to-br from-outdar-navy to-slate-900 p-12 flex flex-col justify-between overflow-hidden hidden lg:flex">
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-outdar-red/30 rounded-full blur-3xl"></div>
-        <div className="absolute top-20 -left-10 w-60 h-60 bg-outdar-yellow/20 rounded-full blur-3xl"></div>
 
-        <div className="relative z-10 flex items-center gap-2 text-white">
-          <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl">
+        {/* Animated decorative bubbles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute -bottom-20 -right-20 w-80 h-80 bg-outdar-red/40 rounded-full animate-float"
+            style={{ filter: "blur(120px)" }}
+          ></div>
+          <div
+            className="absolute top-20 -left-10 w-60 h-60 bg-outdar-yellow/30 rounded-full animate-float"
+            style={{ filter: "blur(100px)", animationDelay: "-5s" }}
+          ></div>
+          <div
+            className="absolute top-1/3 right-1/3 w-48 h-48 bg-outdar-orange/20 rounded-full animate-float"
+            style={{ filter: "blur(80px)", animationDelay: "-10s" }}
+          ></div>
+        </div>
+
+        {/* Logo */}
+        <div className="relative z-10 flex items-center gap-2 text-white animate-fade-in">
+          <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl shadow-red">
             🚪
           </div>
           <span className="font-display font-extrabold text-xl tracking-tight">
@@ -92,7 +112,8 @@ function Register() {
           </span>
         </div>
 
-        <div className="relative z-10 text-white">
+        {/* Quote */}
+        <div className="relative z-10 text-white animate-slide-up">
           <h2 className="font-display font-extrabold text-4xl leading-tight tracking-tight mb-4">
             Step{" "}
             <span className="bg-gradient-to-br from-outdar-yellow to-outdar-orange bg-clip-text text-transparent">
@@ -104,30 +125,57 @@ function Register() {
             Join 142+ young people in Morocco discovering events, making
             friends, and living more.
           </p>
+
+          {/* Stats teaser */}
+          <div className="flex gap-6 mt-8">
+            <div>
+              <p className="font-display font-extrabold text-3xl text-white">30+</p>
+              <p className="text-xs text-white/60 mt-0.5">Events live</p>
+            </div>
+            <div>
+              <p className="font-display font-extrabold text-3xl text-white">8</p>
+              <p className="text-xs text-white/60 mt-0.5">Categories</p>
+            </div>
+            <div>
+              <p className="font-display font-extrabold text-3xl text-white">5</p>
+              <p className="text-xs text-white/60 mt-0.5">Hosts</p>
+            </div>
+          </div>
         </div>
 
+        {/* Footer */}
         <div className="relative z-10 font-mono text-xs text-white/60 tracking-wider">
-          — Discover. Connect. Explore. —
+          — Discover. Connect. Explore. — 🇲🇦
         </div>
       </div>
 
       {/* ============================================ */}
       {/* RIGHT: Form side                              */}
       {/* ============================================ */}
-      <div className="bg-white dark:bg-slate-900 p-8 lg:p-12 flex flex-col justify-center overflow-y-auto">
-        <div className="max-w-sm w-full mx-auto py-4">
+      <div className="relative bg-gradient-to-br from-white via-gray-50 to-orange-50/30 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 p-8 lg:p-12 flex flex-col justify-center overflow-y-auto transition-colors duration-500">
+
+        {/* Subtle bubbles for mobile */}
+        <div className="lg:hidden">
+          <BubblesBg variant="warm" subtle />
+        </div>
+
+        {/* Theme toggle */}
+        <div className="absolute top-6 right-6 z-20">
+          <ThemeToggle />
+        </div>
+
+        <div className="relative z-10 max-w-sm w-full mx-auto py-4 animate-slide-up">
+
           {/* Mobile-only logo */}
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl">
-              🚪
-            </div>
-            <span className="font-display font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">
-              OUTDAR
-            </span>
+          <div className="lg:hidden mb-8">
+            <BrandLogo size="md" to="/" />
           </div>
 
           <h1 className="font-display font-bold text-3xl tracking-tight mb-2 text-gray-900 dark:text-white">
-            Create your account ✨
+            Create your account{" "}
+            <span className="bg-gradient-to-br from-outdar-red via-outdar-orange to-outdar-yellow bg-clip-text text-transparent">
+              ✨
+            </span>
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
             Already have one?{" "}
@@ -140,7 +188,7 @@ function Register() {
           </p>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 rounded-xl text-sm flex items-start gap-2">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 rounded-xl text-sm flex items-start gap-2 animate-fade-in">
               <span>⚠️</span>
               <span>{error}</span>
             </div>
@@ -154,13 +202,15 @@ function Register() {
             <button
               type="button"
               onClick={() => setRole("user")}
-              className={`p-4 border-2 rounded-2xl text-center transition-all ${
+              className={`group p-4 border-2 rounded-2xl text-center transition-all ${
                 formData.role === "user"
                   ? "border-outdar-red bg-outdar-red/5 shadow-red"
-                  : "border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600"
+                  : "border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 hover:-translate-y-0.5"
               }`}
             >
-              <div className="text-3xl mb-2">🌍</div>
+              <div className={`text-3xl mb-2 transition-transform ${formData.role === "user" ? "scale-110" : "group-hover:scale-110"}`}>
+                🌍
+              </div>
               <div className="font-display font-semibold text-sm text-gray-900 dark:text-white">
                 Discoverer
               </div>
@@ -172,13 +222,15 @@ function Register() {
             <button
               type="button"
               onClick={() => setRole("host")}
-              className={`p-4 border-2 rounded-2xl text-center transition-all ${
+              className={`group p-4 border-2 rounded-2xl text-center transition-all ${
                 formData.role === "host"
                   ? "border-outdar-red bg-outdar-red/5 shadow-red"
-                  : "border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600"
+                  : "border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 hover:-translate-y-0.5"
               }`}
             >
-              <div className="text-3xl mb-2">🎪</div>
+              <div className={`text-3xl mb-2 transition-transform ${formData.role === "host" ? "scale-110" : "group-hover:scale-110"}`}>
+                🎪
+              </div>
               <div className="font-display font-semibold text-sm text-gray-900 dark:text-white">
                 Host
               </div>
@@ -189,6 +241,7 @@ function Register() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
             {/* Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900 dark:text-white mb-1.5">
@@ -227,8 +280,8 @@ function Register() {
               <label className="block text-sm font-medium text-gray-900 dark:text-white mb-1.5">
                 Your city <span className="text-outdar-red">*</span>
               </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <div className="relative group">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-colors group-focus-within:text-outdar-red">
                   📍
                 </span>
                 <select
@@ -297,8 +350,8 @@ function Register() {
               </span>
               <span className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                 I agree to OUTDAR's{" "}
-                <span className="text-outdar-red font-medium">Terms</span> and{" "}
-                <span className="text-outdar-red font-medium">
+                <span className="text-outdar-red font-medium hover:underline cursor-pointer">Terms</span> and{" "}
+                <span className="text-outdar-red font-medium hover:underline cursor-pointer">
                   Privacy Policy
                 </span>
               </span>
@@ -320,6 +373,17 @@ function Register() {
               )}
             </button>
           </form>
+
+          {/* Back to home */}
+          <p className="text-center mt-6">
+            <Link
+              to="/"
+              className="text-xs text-gray-400 dark:text-gray-500 hover:text-outdar-red transition-colors group inline-flex items-center gap-1"
+            >
+              <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+              Back to home
+            </Link>
+          </p>
         </div>
       </div>
     </div>

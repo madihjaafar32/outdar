@@ -2,15 +2,17 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
+import BubblesBg from "../components/common/BubblesBg.jsx";
+import BrandLogo from "../components/common/BrandLogo.jsx";
+import ThemeToggle from "../components/common/ThemeToggle.jsx";
+
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
 
-  // Redirect destination after login (default = /home)
   const from = location.state?.from || "/home";
 
-  // Form state
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,7 +27,7 @@ function Login() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    setError(""); // Clear error when user types
+    setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -38,7 +40,6 @@ function Login() {
         email: formData.email,
         password: formData.password,
       });
-      // Success! Redirect to where they came from (or /home)
       navigate(from, { replace: true });
     } catch (err) {
       const message =
@@ -52,17 +53,31 @@ function Login() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
+
       {/* ============================================ */}
       {/* LEFT: Brand side                              */}
       {/* ============================================ */}
       <div className="relative bg-gradient-to-br from-outdar-navy to-slate-900 p-12 flex flex-col justify-between overflow-hidden hidden lg:flex">
-        {/* Decorative blur */}
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-outdar-red/30 rounded-full blur-3xl"></div>
-        <div className="absolute top-20 -left-10 w-60 h-60 bg-outdar-sky/20 rounded-full blur-3xl"></div>
+
+        {/* Animated decorative bubbles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute -bottom-20 -right-20 w-80 h-80 bg-outdar-red/40 rounded-full animate-float"
+            style={{ filter: "blur(120px)" }}
+          ></div>
+          <div
+            className="absolute top-20 -left-10 w-60 h-60 bg-outdar-sky/30 rounded-full animate-float"
+            style={{ filter: "blur(100px)", animationDelay: "-5s" }}
+          ></div>
+          <div
+            className="absolute top-1/2 right-1/4 w-48 h-48 bg-outdar-yellow/20 rounded-full animate-float"
+            style={{ filter: "blur(80px)", animationDelay: "-10s" }}
+          ></div>
+        </div>
 
         {/* Logo */}
-        <div className="relative z-10 flex items-center gap-2 text-white">
-          <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl">
+        <div className="relative z-10 flex items-center gap-2 text-white animate-fade-in">
+          <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl shadow-red">
             🚪
           </div>
           <span className="font-display font-extrabold text-xl tracking-tight">
@@ -71,7 +86,7 @@ function Login() {
         </div>
 
         {/* Quote */}
-        <div className="relative z-10 text-white">
+        <div className="relative z-10 text-white animate-slide-up">
           <h2 className="font-display font-extrabold text-4xl leading-tight tracking-tight mb-4">
             Welcome back to the{" "}
             <span className="bg-gradient-to-br from-outdar-yellow to-outdar-orange bg-clip-text text-transparent">
@@ -94,20 +109,28 @@ function Login() {
       {/* ============================================ */}
       {/* RIGHT: Form side                              */}
       {/* ============================================ */}
-      <div className="bg-white dark:bg-slate-900 p-8 lg:p-12 flex flex-col justify-center">
-        <div className="max-w-sm w-full mx-auto">
-          {/* Mobile-only logo (hidden on lg+) */}
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl">
-              🚪
-            </div>
-            <span className="font-display font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">
-              OUTDAR
-            </span>
+      <div className="relative bg-gradient-to-br from-white via-gray-50 to-orange-50/30 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 p-8 lg:p-12 flex flex-col justify-center transition-colors duration-500 overflow-hidden">
+
+        {/* Subtle bubbles for mobile (when left side is hidden) */}
+        <div className="lg:hidden">
+          <BubblesBg variant="warm" subtle />
+        </div>
+
+        {/* Theme toggle (top-right) */}
+        <div className="absolute top-6 right-6 z-20">
+          <ThemeToggle />
+        </div>
+
+        <div className="relative z-10 max-w-sm w-full mx-auto animate-slide-up">
+
+          {/* Mobile-only logo */}
+          <div className="lg:hidden mb-8">
+            <BrandLogo size="md" to="/" />
           </div>
 
           <h1 className="font-display font-bold text-3xl tracking-tight mb-2 text-gray-900 dark:text-white">
-            Welcome back 👋
+            Welcome back{" "}
+            <span className="inline-block animate-wave origin-bottom-right">👋</span>
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
             Don't have an account?{" "}
@@ -121,20 +144,21 @@ function Login() {
 
           {/* Error banner */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 rounded-xl text-sm flex items-start gap-2">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 rounded-xl text-sm flex items-start gap-2 animate-fade-in">
               <span>⚠️</span>
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-900 dark:text-white mb-1.5">
                 Email
               </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+              <div className="relative group">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-outdar-red">
                   ✉
                 </span>
                 <input
@@ -163,8 +187,8 @@ function Login() {
                   Forgot?
                 </button>
               </div>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+              <div className="relative group">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-outdar-red">
                   🔒
                 </span>
                 <input
@@ -235,15 +259,26 @@ function Login() {
             <div className="flex-1 h-px bg-gray-200 dark:bg-slate-700"></div>
           </div>
 
-          {/* Social login (placeholder for now) */}
+          {/* Social login */}
           <button
             type="button"
             onClick={() => alert("Google login coming in Phase 2!")}
-            className="w-full py-3 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-medium text-sm text-gray-900 dark:text-white hover:border-gray-400 dark:hover:border-slate-500 hover:-translate-y-0.5 hover:shadow-sm transition-all flex items-center justify-center gap-2.5"
+            className="w-full py-3 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-medium text-sm text-gray-900 dark:text-white hover:border-outdar-red dark:hover:border-outdar-red hover:-translate-y-0.5 hover:shadow-sm transition-all flex items-center justify-center gap-2.5"
           >
-            <span className="font-bold">G</span>
+            <span className="font-bold text-base">G</span>
             <span>Continue with Google</span>
           </button>
+
+          {/* Back to home */}
+          <p className="text-center mt-6">
+            <Link
+              to="/"
+              className="text-xs text-gray-400 dark:text-gray-500 hover:text-outdar-red transition-colors group inline-flex items-center gap-1"
+            >
+              <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+              Back to home
+            </Link>
+          </p>
         </div>
       </div>
     </div>

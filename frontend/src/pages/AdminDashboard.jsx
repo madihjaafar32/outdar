@@ -8,6 +8,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import * as adminService from "../services/admin.service.js";
 
+import BubblesBg from "../components/common/BubblesBg.jsx";
+import BrandLogo from "../components/common/BrandLogo.jsx";
+import ThemeToggle from "../components/common/ThemeToggle.jsx";
+
 // ── Sidebar nav items ────────────────────────────────────
 const NAV = [
   { key: "dashboard",  icon: "📊", label: "Dashboard"   },
@@ -25,14 +29,14 @@ function StatCard({ icon, label, value, sub, color = "red" }) {
     red:    "bg-outdar-red/10 text-outdar-red",
     sky:    "bg-outdar-sky/10 text-outdar-sky",
     green:  "bg-outdar-green/10 text-outdar-green",
-    yellow: "bg-outdar-yellow/10 text-outdar-navy",
+    yellow: "bg-outdar-yellow/10 text-outdar-navy dark:text-outdar-yellow",
     orange: "bg-outdar-orange/10 text-outdar-orange",
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700">
+    <div className="group bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 hover:-translate-y-0.5 hover:shadow-md transition-all">
       <div className="flex items-center justify-between mb-3">
-        <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${colors[color]}`}>
+        <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${colors[color]} group-hover:scale-110 transition-transform`}>
           {icon}
         </span>
       </div>
@@ -40,7 +44,7 @@ function StatCard({ icon, label, value, sub, color = "red" }) {
         {value}
       </p>
       <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-0.5">{label}</p>
-      {sub && <p className="text-xs text-outdar-green mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-outdar-green mt-1 font-medium">{sub}</p>}
     </div>
   );
 }
@@ -64,7 +68,6 @@ function AdminDashboard() {
   const [reportFilter, setReportFilter] = useState("all");
   const [actionMsg, setActionMsg]   = useState("");
 
-  // Load data based on active tab
   useEffect(() => {
     setIsLoading(true);
     setActionMsg("");
@@ -141,7 +144,6 @@ function AdminDashboard() {
     setActionMsg("🗑️ Report dismissed");
   };
 
-  // Filter helpers
   const filteredUsers = users.filter(u =>
     u.name.toLowerCase().includes(searchUsers.toLowerCase()) ||
     u.email.toLowerCase().includes(searchUsers.toLowerCase())
@@ -150,20 +152,25 @@ function AdminDashboard() {
   const filteredEvents = events.filter(e =>
     e.title.toLowerCase().includes(searchEvents.toLowerCase())
   );
+
   const filteredReports =
-  reportFilter === "all"
-    ? reports
-    : reports.filter(r => r.status === reportFilter);
+    reportFilter === "all"
+      ? reports
+      : reports.filter(r => r.status === reportFilter);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex relative overflow-hidden">
+
+      <BubblesBg variant="cool" subtle />
 
       {/* ── Sidebar ── */}
-      <aside className="w-56 flex-shrink-0 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex flex-col">
+      <aside className="relative z-10 w-56 flex-shrink-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-r border-gray-200/50 dark:border-slate-700/50 flex flex-col">
         {/* Logo */}
-        <div className="p-5 border-b border-gray-200 dark:border-slate-700">
-          <Link to="/home" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-outdar-red flex items-center justify-center text-lg">🚪</div>
+        <div className="p-5 border-b border-gray-200/50 dark:border-slate-700/50">
+          <Link to="/home" className="flex items-center gap-2 group">
+            <div className="w-9 h-9 rounded-xl bg-outdar-red flex items-center justify-center text-lg shadow-sm group-hover:scale-110 group-hover:rotate-12 transition-all">
+              🚪
+            </div>
             <div>
               <p className="font-display font-extrabold text-sm text-gray-900 dark:text-white">OUTDAR</p>
               <p className="text-xs text-outdar-red font-semibold">Admin Panel</p>
@@ -179,19 +186,19 @@ function AdminDashboard() {
               onClick={() => setActiveTab(item.key)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 activeTab === item.key
-                  ? "bg-outdar-red/10 text-outdar-red"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  ? "bg-gradient-to-r from-outdar-red/10 to-outdar-orange/10 text-outdar-red shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700/50 hover:translate-x-0.5"
               }`}
             >
               <span className="text-base">{item.icon}</span>
               {item.label}
               {item.key === "hosts" && pendingHosts.length > 0 && (
-                <span className="ml-auto text-xs bg-outdar-red text-white px-1.5 py-0.5 rounded-full">
+                <span className="ml-auto text-xs bg-outdar-red text-white px-1.5 py-0.5 rounded-full font-bold animate-pulse">
                   {pendingHosts.length}
                 </span>
               )}
               {item.key === "reports" && reports.filter(r => r.status === "pending").length > 0 && (
-                <span className="ml-auto text-xs bg-outdar-orange text-white px-1.5 py-0.5 rounded-full">
+                <span className="ml-auto text-xs bg-outdar-orange text-white px-1.5 py-0.5 rounded-full font-bold">
                   {reports.filter(r => r.status === "pending").length}
                 </span>
               )}
@@ -199,35 +206,39 @@ function AdminDashboard() {
           ))}
         </nav>
 
-        {/* User info */}
-        <div className="p-3 border-t border-gray-200 dark:border-slate-700">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-700">
-            <div className="w-7 h-7 rounded-full bg-outdar-red flex items-center justify-center text-white text-xs font-bold">
+        {/* User info + Theme */}
+        <div className="p-3 border-t border-gray-200/50 dark:border-slate-700/50 space-y-2">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-slate-700/50">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-outdar-red to-outdar-orange flex items-center justify-center text-white text-xs font-bold">
               {user?.name?.[0]}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
                 {user?.name}
               </p>
-              <p className="text-xs text-outdar-red">Admin</p>
+              <p className="text-xs text-outdar-red font-medium">Admin</p>
             </div>
           </div>
-          <button
-            onClick={logout}
-            className="w-full mt-2 text-xs text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors py-1"
-          >
-            Logout
-          </button>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="!w-8 !h-8" />
+            <button
+              onClick={logout}
+              className="flex-1 text-xs text-gray-500 dark:text-gray-400 hover:text-outdar-red transition-colors py-2 border border-gray-200 dark:border-slate-700 rounded-lg hover:border-outdar-red"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="flex-1 overflow-auto">
+      <main className="relative z-10 flex-1 overflow-auto">
         <div className="p-6">
 
           {/* Action message */}
           {actionMsg && (
-            <div className="mb-4 px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-900 dark:text-white">
+            <div className="mb-4 px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-900 dark:text-white shadow-sm animate-slide-up">
               {actionMsg}
             </div>
           )}
@@ -241,17 +252,16 @@ function AdminDashboard() {
 
           {/* ── DASHBOARD TAB ── */}
           {!isLoading && activeTab === "dashboard" && stats && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in">
               <div>
-                <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
-                  Dashboard 📊
+                <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
+                  Dashboard <span>📊</span>
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Platform overview
                 </p>
               </div>
 
-              {/* Stats grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard icon="👥" label="Total Users" value={stats.stats.totalUsers}
                   sub={`+${stats.stats.recentSignups} this week`} color="sky" />
@@ -264,15 +274,15 @@ function AdminDashboard() {
               </div>
 
               {/* Top events */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden shadow-sm">
                 <div className="px-5 py-4 border-b border-gray-100 dark:border-slate-700">
-                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white">
-                    🔥 Most Popular Events
+                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                    <span>🔥</span> Most Popular Events
                   </h2>
                 </div>
                 <div className="divide-y divide-gray-100 dark:divide-slate-700">
                   {stats.topEvents.map((event, i) => (
-                    <div key={event._id} className="px-5 py-3 flex items-center gap-4">
+                    <div key={event._id} className="px-5 py-3 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
                       <span className="text-lg font-bold text-gray-300 dark:text-gray-600 w-6">
                         {i + 1}
                       </span>
@@ -296,10 +306,10 @@ function AdminDashboard() {
               </div>
 
               {/* Categories breakdown */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden shadow-sm">
                 <div className="px-5 py-4 border-b border-gray-100 dark:border-slate-700">
-                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white">
-                    🏷️ Events by Category
+                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                    <span>🏷️</span> Events by Category
                   </h2>
                 </div>
                 <div className="p-5 space-y-3">
@@ -314,9 +324,9 @@ function AdminDashboard() {
                             </span>
                             <span className="text-gray-500">{count} events</span>
                           </div>
-                          <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-1.5">
+                          <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
                             <div
-                              className="h-1.5 rounded-full"
+                              className="h-1.5 rounded-full transition-all duration-700"
                               style={{
                                 width: `${Math.min(100, (count / stats.stats.totalEvents) * 100)}%`,
                                 backgroundColor: category.color,
@@ -334,9 +344,9 @@ function AdminDashboard() {
 
           {/* ── HOSTS TAB ── */}
           {!isLoading && activeTab === "hosts" && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div>
-                <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+                <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
                   Verify Hosts ✓
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -345,7 +355,7 @@ function AdminDashboard() {
               </div>
 
               {pendingHosts.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+                <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700">
                   <div className="text-5xl mb-3">✅</div>
                   <p className="font-display font-bold text-gray-900 dark:text-white">
                     All caught up!
@@ -356,18 +366,20 @@ function AdminDashboard() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {pendingHosts.map((host) => (
-                    <div key={host._id} className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 flex items-center gap-4">
-                      {/* Avatar */}
+                  {pendingHosts.map((host, i) => (
+                    <div
+                      key={host._id}
+                      className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 flex items-center gap-4 hover:shadow-md transition-shadow animate-fade-in"
+                      style={{ animationDelay: `${i * 50}ms` }}
+                    >
                       {host.avatar ? (
-                        <img src={host.avatar} alt={host.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                        <img src={host.avatar} alt={host.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0 ring-2 ring-outdar-red/10" />
                       ) : (
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-outdar-red to-outdar-orange flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
                           {host.name?.[0]}
                         </div>
                       )}
 
-                      {/* Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="font-semibold text-gray-900 dark:text-white">{host.name}</p>
@@ -392,11 +404,10 @@ function AdminDashboard() {
                         )}
                       </div>
 
-                      {/* Actions */}
                       <div className="flex gap-2 flex-shrink-0">
                         <button
                           onClick={() => handleVerify(host._id, host.name)}
-                          className="px-4 py-2 bg-outdar-green text-white rounded-xl text-sm font-semibold hover:-translate-y-0.5 transition-all"
+                          className="px-4 py-2 bg-outdar-green text-white rounded-xl text-sm font-semibold hover:-translate-y-0.5 hover:shadow-md transition-all"
                         >
                           ✓ Verify
                         </button>
@@ -416,10 +427,10 @@ function AdminDashboard() {
 
           {/* ── USERS TAB ── */}
           {!isLoading && activeTab === "users" && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+                  <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
                     Users 👥
                   </h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -430,15 +441,15 @@ function AdminDashboard() {
                   type="text"
                   value={searchUsers}
                   onChange={(e) => setSearchUsers(e.target.value)}
-                  placeholder="Search users..."
-                  className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-outdar-red"
+                  placeholder="🔍 Search users..."
+                  className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-outdar-red focus:ring-2 focus:ring-outdar-red/10 transition-all"
                 />
               </div>
 
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden shadow-sm">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-100 dark:border-slate-700">
+                    <tr className="border-b border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-700/30">
                       <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
                       <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
                       <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">City</th>
@@ -465,7 +476,7 @@ function AdminDashboard() {
                           </div>
                         </td>
                         <td className="px-5 py-3">
-                          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                             u.role === "admin" ? "bg-outdar-red/10 text-outdar-red" :
                             u.role === "host"  ? "bg-outdar-orange/10 text-outdar-orange" :
                             "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400"
@@ -500,10 +511,10 @@ function AdminDashboard() {
 
           {/* ── EVENTS TAB ── */}
           {!isLoading && activeTab === "events" && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+                  <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
                     Events 📅
                   </h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -514,14 +525,18 @@ function AdminDashboard() {
                   type="text"
                   value={searchEvents}
                   onChange={(e) => setSearchEvents(e.target.value)}
-                  placeholder="Search events..."
-                  className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-outdar-red"
+                  placeholder="🔍 Search events..."
+                  className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-outdar-red focus:ring-2 focus:ring-outdar-red/10 transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                {filteredEvents.map((event) => (
-                  <div key={event._id} className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 flex items-center gap-4">
+                {filteredEvents.map((event, i) => (
+                  <div
+                    key={event._id}
+                    className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all animate-fade-in"
+                    style={{ animationDelay: `${i * 30}ms` }}
+                  >
                     <img
                       src={event.image}
                       alt={event.title}
@@ -529,7 +544,7 @@ function AdminDashboard() {
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-gray-900 dark:text-white truncate">{event.title}</p>
-                      <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex-wrap">
                         <span>{event.category?.icon} {event.category?.name}</span>
                         <span>📍 {event.location?.city}</span>
                         <span>👥 {event.attendeeCount}/{event.capacity}</span>
@@ -559,9 +574,9 @@ function AdminDashboard() {
 
           {/* ── ANALYTICS TAB ── */}
           {!isLoading && activeTab === "analytics" && analyticsData && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in">
               <div>
-                <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+                <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
                   Analytics 📈
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -569,7 +584,6 @@ function AdminDashboard() {
                 </p>
               </div>
 
-              {/* Key metrics */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard icon="🎟️" label="Total RSVPs"       value={analyticsData.stats.totalAttendances} color="red"    />
                 <StatCard icon="⭐" label="Total Reviews"      value={analyticsData.stats.totalReviews}     color="yellow" />
@@ -579,13 +593,12 @@ function AdminDashboard() {
                   color="sky" />
               </div>
 
-              {/* Events by category bars */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden shadow-sm">
                 <div className="px-5 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
-                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white">
-                    🏷️ Events by Category
+                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                    <span>🏷️</span> Events by Category
                   </h2>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
                     {analyticsData.stats.totalEvents} total
                   </span>
                 </div>
@@ -601,12 +614,13 @@ function AdminDashboard() {
                             {count} events ({Math.round((count / analyticsData.stats.totalEvents) * 100)}%)
                           </span>
                         </div>
-                        <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-3">
+                        <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
                           <div
-                            className="h-3 rounded-full transition-all duration-500"
+                            className="h-3 rounded-full transition-all duration-700"
                             style={{
                               width: `${Math.min(100, (count / analyticsData.stats.totalEvents) * 100)}%`,
                               backgroundColor: category.color,
+                              boxShadow: `0 0 8px ${category.color}66`,
                             }}
                           ></div>
                         </div>
@@ -616,18 +630,17 @@ function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Top events table */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden shadow-sm">
                 <div className="px-5 py-4 border-b border-gray-100 dark:border-slate-700">
-                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white">
-                    🔥 Top Events by Attendance
+                  <h2 className="font-display font-bold text-base text-gray-900 dark:text-white flex items-center gap-2">
+                    <span>🔥</span> Top Events by Attendance
                   </h2>
                 </div>
                 <div className="divide-y divide-gray-50 dark:divide-slate-700">
                   {analyticsData.topEvents.map((event, i) => {
                     const fillPct = Math.round((event.attendeeCount / event.capacity) * 100);
                     return (
-                      <div key={event._id} className="px-5 py-4 flex items-center gap-4">
+                      <div key={event._id} className="px-5 py-4 flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
                         <span className="text-lg font-bold text-gray-300 dark:text-gray-600 w-6">
                           {i + 1}
                         </span>
@@ -636,9 +649,9 @@ function AdminDashboard() {
                             {event.title}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
-                            <div className="flex-1 bg-gray-100 dark:bg-slate-700 rounded-full h-1.5">
+                            <div className="flex-1 bg-gray-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
                               <div
-                                className="h-1.5 rounded-full"
+                                className="h-1.5 rounded-full transition-all duration-700"
                                 style={{
                                   width: `${fillPct}%`,
                                   backgroundColor: fillPct >= 80 ? "#E63946" : "#7CB342",
@@ -662,15 +675,14 @@ function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Quick stats row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 text-center">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 text-center hover:-translate-y-0.5 transition-transform shadow-sm">
                   <p className="text-3xl font-extrabold text-outdar-red mb-1">
                     {analyticsData.stats.totalUsers + analyticsData.stats.totalHosts}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Total Members</p>
                 </div>
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 text-center">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 text-center hover:-translate-y-0.5 transition-transform shadow-sm">
                   <p className="text-3xl font-extrabold text-outdar-green mb-1">
                     {analyticsData.stats.totalEvents > 0
                       ? Math.round((analyticsData.stats.totalAttendances / analyticsData.stats.totalEvents) * 10) / 10
@@ -678,7 +690,7 @@ function AdminDashboard() {
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Avg RSVPs per Event</p>
                 </div>
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 text-center">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-100 dark:border-slate-700 text-center hover:-translate-y-0.5 transition-transform shadow-sm">
                   <p className="text-3xl font-extrabold text-outdar-sky mb-1">
                     +{analyticsData.stats.recentSignups}
                   </p>
@@ -690,10 +702,10 @@ function AdminDashboard() {
 
           {/* ── REPORTS TAB ── */}
           {!isLoading && activeTab === "reports" && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+                  <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
                     Reports 🚩
                   </h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -702,43 +714,51 @@ function AdminDashboard() {
                 </div>
                 <div className="flex gap-2">
                   {["all", "pending", "resolved"].map((filter) => (
-                    <button key={filter}
-                      className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 capitalize hover:border-outdar-red hover:text-outdar-red transition-all">
+                    <button
+                      key={filter}
+                      onClick={() => setReportFilter(filter)}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-full capitalize transition-all ${
+                        reportFilter === filter
+                          ? "bg-outdar-red text-white shadow-sm"
+                          : "bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:border-outdar-red hover:text-outdar-red"
+                      }`}
+                    >
                       {filter}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {reports.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+              {filteredReports.length === 0 ? (
+                <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700">
                   <div className="text-5xl mb-3">✅</div>
                   <p className="font-display font-bold text-gray-900 dark:text-white">No reports!</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Platform is clean 🎉</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {reports.map((report) => (
-                    <div key={report._id}
-                      className={`bg-white dark:bg-slate-800 rounded-2xl p-5 border transition-all ${
+                  {filteredReports.map((report, i) => (
+                    <div
+                      key={report._id}
+                      className={`bg-white dark:bg-slate-800 rounded-2xl p-5 border transition-all animate-fade-in ${
                         report.status === "pending"
-                          ? "border-outdar-orange/40 dark:border-outdar-orange/30"
+                          ? "border-outdar-orange/40 dark:border-outdar-orange/30 shadow-sm"
                           : "border-gray-100 dark:border-slate-700 opacity-60"
-                      }`}>
+                      }`}
+                      style={{ animationDelay: `${i * 50}ms` }}
+                    >
                       <div className="flex items-start gap-4">
-
-                        {/* Priority indicator */}
                         <div className={`w-1 self-stretch rounded-full flex-shrink-0 ${
                           report.status === "pending" ? "bg-outdar-orange" : "bg-gray-200 dark:bg-slate-600"
                         }`}></div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                              report.reason === "spam"         ? "bg-yellow-100 text-yellow-700" :
-                              report.reason === "harassment"   ? "bg-red-100 text-red-700" :
-                              report.reason === "inappropriate"? "bg-orange-100 text-orange-700" :
-                              report.reason === "scam"         ? "bg-purple-100 text-purple-700" :
+                              report.reason === "spam"          ? "bg-yellow-100 text-yellow-700" :
+                              report.reason === "harassment"    ? "bg-red-100 text-red-700" :
+                              report.reason === "inappropriate" ? "bg-orange-100 text-orange-700" :
+                              report.reason === "scam"          ? "bg-purple-100 text-purple-700" :
                               "bg-gray-100 text-gray-700"
                             }`}>
                               {report.reason}
@@ -761,7 +781,7 @@ function AdminDashboard() {
                             {report.targetTitle}
                           </p>
                           {report.details && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 italic">
                               "{report.details}"
                             </p>
                           )}
@@ -772,12 +792,11 @@ function AdminDashboard() {
                           </p>
                         </div>
 
-                        {/* Actions */}
                         {report.status === "pending" && (
                           <div className="flex gap-2 flex-shrink-0">
                             <button
                               onClick={() => handleResolveReport(report._id)}
-                              className="px-3 py-1.5 bg-outdar-green text-white rounded-lg text-xs font-semibold hover:-translate-y-0.5 transition-all"
+                              className="px-3 py-1.5 bg-outdar-green text-white rounded-lg text-xs font-semibold hover:-translate-y-0.5 hover:shadow-md transition-all"
                             >
                               ✓ Resolve
                             </button>
@@ -799,9 +818,9 @@ function AdminDashboard() {
 
           {/* ── CATEGORIES TAB ── */}
           {!isLoading && activeTab === "categories" && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div>
-                <h1 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+                <h1 className="font-display font-extrabold text-3xl text-gray-900 dark:text-white mb-1 tracking-tight">
                   Categories 🏷️
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -810,16 +829,23 @@ function AdminDashboard() {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {categories.map((cat) => (
-                  <div key={cat._id} className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 text-center">
+                {categories.map((cat, i) => (
+                  <div
+                    key={cat._id}
+                    className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 text-center hover:-translate-y-1 hover:shadow-md transition-all animate-fade-in"
+                    style={{ animationDelay: `${i * 50}ms` }}
+                  >
                     <div
                       className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl"
-                      style={{ backgroundColor: cat.color + "20" }}
+                      style={{
+                        backgroundColor: cat.color + "20",
+                        boxShadow: `0 4px 12px -2px ${cat.color}33`,
+                      }}
                     >
                       {cat.icon}
                     </div>
                     <p className="font-semibold text-sm text-gray-900 dark:text-white">{cat.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{cat.slug}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-mono">{cat.slug}</p>
                     <div
                       className="w-full h-1 rounded-full mt-3"
                       style={{ backgroundColor: cat.color }}
