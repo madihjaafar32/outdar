@@ -10,8 +10,10 @@ import EventChat from "./pages/EventChat.jsx";
 import AIChat from "./pages/AIChat.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 
-
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
+import BubblesBg from "./components/common/BubblesBg.jsx";
+import BrandLogo from "./components/common/BrandLogo.jsx";
+import ThemeToggle from "./components/common/ThemeToggle.jsx";
 
 /**
  * Splash / Landing Page
@@ -22,46 +24,26 @@ function Splash() {
   if (isAuth) return <Navigate to="/home" replace />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 transition-colors duration-500">
-
-      {/* Floating bubbles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute w-96 h-96 -top-24 -left-24 bg-outdar-red/15 rounded-full blur-3xl animate-float"></div>
-
-        <div
-          className="absolute w-80 h-80 top-1/3 -right-24 bg-outdar-sky/15 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: "-5s" }}
-        ></div>
-
-        <div
-          className="absolute w-72 h-72 bottom-20 left-10 bg-outdar-yellow/15 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: "-10s" }}
-        ></div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50 dark:from-outdar-navy dark:via-slate-900 dark:to-slate-800 transition-colors duration-500 relative overflow-hidden">
+      <BubblesBg />
 
       {/* Navbar */}
-      <nav className="px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl bg-outdar-red flex items-center justify-center text-xl shadow-sm">
-            🚪
-          </div>
-
-          <span className="font-display font-extrabold text-xl text-gray-900 dark:text-white">
-            OUTDAR
-          </span>
-        </div>
+      <nav className="relative z-10 px-6 py-5 flex items-center justify-between max-w-6xl mx-auto">
+        <BrandLogo size="md" to="/" />
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
+
           <Link
             to="/login"
-            className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-outdar-red transition-colors"
+            className="hidden sm:inline-block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-outdar-red transition-colors px-3 py-2"
           >
             Sign in
           </Link>
 
           <Link
             to="/register"
-            className="text-sm px-4 py-2 bg-outdar-red text-white rounded-xl font-semibold hover:-translate-y-0.5 transition-all shadow-sm"
+            className="text-sm px-5 py-2.5 bg-outdar-red text-white rounded-xl font-semibold hover:-translate-y-0.5 hover:shadow-red transition-all shadow-sm"
           >
             Get started →
           </Link>
@@ -69,17 +51,16 @@ function Splash() {
       </nav>
 
       {/* Hero */}
-      <main className="max-w-6xl mx-auto px-6 pt-16 pb-24">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+      <main className="relative z-10 max-w-6xl mx-auto px-6 pt-12 pb-24">
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-slide-up">
 
-          <span className="inline-block font-mono text-xs uppercase tracking-widest text-outdar-red bg-outdar-red/10 px-3 py-1.5 rounded-full mb-6 font-medium">
+          <span className="inline-block font-mono text-xs uppercase tracking-widest text-outdar-red bg-outdar-red/10 dark:bg-outdar-red/20 px-3 py-1.5 rounded-full mb-6 font-medium border border-outdar-red/20">
             🇲🇦 Made for Morocco's youth
           </span>
 
-          <h1 className="font-display font-extrabold text-5xl md:text-7xl tracking-tight leading-tight text-gray-900 dark:text-white mb-6">
+          <h1 className="font-display font-extrabold text-5xl md:text-7xl tracking-tight leading-[1.05] text-gray-900 dark:text-white mb-6">
             Step outside.
             <br />
-
             <span className="bg-gradient-to-br from-outdar-red via-outdar-orange to-outdar-yellow bg-clip-text text-transparent">
               Discover more.
             </span>
@@ -93,14 +74,14 @@ function Splash() {
           <div className="flex gap-3 flex-wrap justify-center">
             <Link
               to="/register"
-              className="px-8 py-4 bg-outdar-red text-white rounded-2xl font-bold text-base shadow-sm hover:-translate-y-1 hover:shadow-md transition-all"
+              className="px-8 py-4 bg-outdar-red text-white rounded-2xl font-bold text-base shadow-red hover:-translate-y-1 hover:shadow-red-lg transition-all"
             >
               Start exploring free →
             </Link>
 
             <Link
               to="/login"
-              className="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-2xl font-bold text-base text-gray-900 dark:text-white hover:-translate-y-1 hover:shadow-md transition-all"
+              className="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-2xl font-bold text-base text-gray-900 dark:text-white hover:-translate-y-1 hover:shadow-md hover:border-outdar-red dark:hover:border-outdar-red transition-all"
             >
               Sign in
             </Link>
@@ -114,28 +95,30 @@ function Splash() {
               icon: "🔍",
               title: "Discover",
               desc: "Browse events by category, city, or vibe. Music, sports, food, art — it's all here.",
+              color: "outdar-red",
             },
             {
               icon: "👥",
               title: "Connect",
               desc: "See who's going, join the event chat, and meet people before the event.",
+              color: "outdar-sky",
             },
             {
               icon: "🎉",
               title: "Explore",
               desc: "RSVP in one tap, get reminders, and build your social life in Morocco.",
+              color: "outdar-yellow",
             },
-          ].map((f) => (
+          ].map((f, i) => (
             <div
               key={f.title}
-              className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all"
+              className="group bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md hover:border-outdar-red/30 transition-all"
+              style={{ animationDelay: `${i * 100}ms` }}
             >
-              <div className="text-3xl mb-3">{f.icon}</div>
-
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{f.icon}</div>
               <h3 className="font-display font-bold text-lg text-gray-900 dark:text-white mb-2">
                 {f.title}
               </h3>
-
               <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                 {f.desc}
               </p>
@@ -144,29 +127,33 @@ function Splash() {
         </div>
 
         {/* Stats bar */}
-        <div className="bg-outdar-navy dark:bg-slate-800 rounded-2xl p-6 flex flex-wrap justify-around gap-6">
+        <div className="bg-outdar-navy dark:bg-slate-800 rounded-3xl p-8 flex flex-wrap justify-around gap-6 shadow-lg relative overflow-hidden">
+
+          {/* Decorative accent */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-outdar-red/20 rounded-full blur-2xl"></div>
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-outdar-sky/20 rounded-full blur-2xl"></div>
+
           {[
-            { value: "30+", label: "Events live" },
-            { value: "8", label: "Categories" },
-            { value: "5", label: "Host organizers" },
-            { value: "2", label: "Cities" },
+            { value: "30+", label: "Events live", icon: "🎟️" },
+            { value: "8",   label: "Categories",  icon: "🏷️" },
+            { value: "5",   label: "Hosts",       icon: "🎤" },
+            { value: "2",   label: "Cities",      icon: "🌍" },
           ].map((s) => (
-            <div key={s.label} className="text-center">
+            <div key={s.label} className="text-center relative z-10">
+              <div className="text-2xl mb-2">{s.icon}</div>
               <p className="font-display font-extrabold text-3xl text-white mb-1">
                 {s.value}
               </p>
-
               <p className="text-sm text-white/60">{s.label}</p>
             </div>
           ))}
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <p className="font-mono text-sm text-gray-400 dark:text-gray-500">
             — Discover. Connect. Explore. —
           </p>
-
           <p className="text-xs text-gray-300 dark:text-gray-600 mt-2">
             Built with 💙 in Casablanca · OUTDAR © 2026
           </p>
