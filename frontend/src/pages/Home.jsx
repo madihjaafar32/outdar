@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import EventCard from "../components/events/EventCard.jsx";
 import useEvents from "../hooks/useEvents.js";
@@ -25,12 +26,19 @@ function Home() {
           <span className="text-sm text-gray-600 dark:text-gray-400">
             Hey, <span className="font-semibold text-outdar-red">{user?.name?.split(" ")[0]}</span>!
           </span>
+          <Link
+           to="/ai"
+           className="text-xs px-3 py-1.5 bg-outdar-red/10 border border-outdar-red/20 rounded-lg text-outdar-red font-semibold hover:bg-outdar-red hover:text-white transition-all"
+        >
+          🤖 AI
+          </Link>
+
           <button
-            onClick={logout}
-            className="text-xs px-3 py-1.5 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 dark:text-gray-400 hover:border-outdar-red hover:text-outdar-red transition-all"
-          >
-            Logout
-          </button>
+  onClick={logout}
+  className="text-xs px-3 py-1.5 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 dark:text-gray-400 hover:border-outdar-red hover:text-outdar-red transition-all"
+>
+  Logout
+</button>
         </div>
       </nav>
 

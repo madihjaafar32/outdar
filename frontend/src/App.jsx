@@ -7,6 +7,7 @@ import Home from "./pages/Home.jsx";
 import Browse from "./pages/Browse.jsx";
 import EventDetail from "./pages/EventDetail.jsx";
 import EventChat from "./pages/EventChat.jsx";
+import AIChat from "./pages/AIChat.jsx";
 
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 
@@ -124,7 +125,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+  path="/ai"
+  element={
+    <ProtectedRoute>
+      <AIChat />
+    </ProtectedRoute>
+  }
+/>
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -11,10 +11,13 @@ import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import messageRoutes from "./src/routes/message.routes.js";
 
-// Load environment variables BEFORE anything else
 dotenv.config();
+console.log("ENV TEST:", process.env.GEMINI_API_KEY);
+
+import messageRoutes from "./src/routes/message.routes.js";
+import aiRoutes from "./src/routes/ai.routes.js";
+
 
 import connectDB from "./src/config/database.js";
 import errorHandler from "./src/middleware/errorHandler.js";
@@ -99,6 +102,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/attendances", attendanceRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/ai", aiRoutes);
 // app.use("/api/users", userRoutes);
 
 // ============================================

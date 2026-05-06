@@ -5,17 +5,23 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-  "dev": "nodemon server.js",
-  "start": "node server.js",
-  "seed:categories": "node src/seeders/seedCategories.js",
-  "seed:users": "node src/seeders/seedUsers.js",
-  "seed:events": "node src/seeders/seedEvents.js",
-  "seed:all": "npm run seed:categories && npm run seed:users && npm run seed:events"
-},
-  "keywords": ["outdar", "events", "morocco", "mern"],
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed:categories": "node src/seeders/seedCategories.js",
+    "seed:users": "node src/seeders/seedUsers.js",
+    "seed:events": "node src/seeders/seedEvents.js",
+    "seed:all": "npm run seed:categories && npm run seed:users && npm run seed:events"
+  },
+  "keywords": [
+    "outdar",
+    "events",
+    "morocco",
+    "mern"
+  ],
   "author": "Jaafar M.",
   "license": "MIT",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.3",
     "compression": "^1.7.5",
