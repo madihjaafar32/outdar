@@ -30,7 +30,7 @@ import eventRoutes from "./src/routes/event.routes.js";
 import categoryRoutes from "./src/routes/category.routes.js";
 import attendanceRoutes from "./src/routes/attendance.routes.js";
 import reviewRoutes from "./src/routes/review.routes.js";
-// import userRoutes from "./src/routes/user.routes.js";
+import userRoutes from "./src/routes/user.routes.js";
 
 // Import socket handlers (will be added in Slice 6)
 import { initSocket } from "./src/sockets/index.js";
@@ -105,7 +105,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/admin", adminRoutes);
-// app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
 
 // ============================================
 // Error handling

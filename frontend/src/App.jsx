@@ -11,6 +11,7 @@ import AIChat from "./pages/AIChat.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import About from "./pages/About.jsx";
 import CreateEvent from "./pages/CreateEvent.jsx";
+import Profile from "./pages/Profile.jsx";
 
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import BubblesBg from "./components/common/BubblesBg.jsx";
@@ -250,6 +251,24 @@ function App() {
         element={
           <ProtectedRoute>
             <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/users/:id"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />

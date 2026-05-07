@@ -26,7 +26,9 @@ const api = axios.create({
 
 /**
  * REQUEST INTERCEPTOR
- * Auto-attach JWT token to every outgoing request (if available)
+ * - Auto-attach JWT token to every outgoing request (if available)
+ * - Remove Content-Type for FormData so axios sets it automatically
+ *   (with the correct multipart/form-data boundary)
  */
 api.interceptors.request.use(
   (config) => {
@@ -34,6 +36,12 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Let axios handle Content-Type automatically for FormData
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

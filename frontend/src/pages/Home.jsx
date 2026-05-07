@@ -61,9 +61,21 @@ function Home() {
 
         {/* Right: User + actions */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block mr-2">
-            Hey, <span className="font-semibold text-outdar-red">{user?.name?.split(" ")[0]}</span>!
-          </span>
+          <Link
+            to="/profile"
+            className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-outdar-red transition-colors mr-2 group"
+          >
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-xl object-cover ring-2 ring-transparent group-hover:ring-outdar-red/30 transition-all" />
+            ) : (
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-outdar-red to-outdar-orange flex items-center justify-center text-white text-xs font-bold ring-2 ring-transparent group-hover:ring-outdar-red/30 transition-all">
+                {user?.name?.[0]}
+              </div>
+            )}
+            <span>
+              Hey, <span className="font-semibold text-outdar-red">{user?.name?.split(" ")[0]}</span>!
+            </span>
+          </Link>
 
           <ThemeToggle />
 
