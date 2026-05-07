@@ -75,14 +75,14 @@ function Login() {
           ></div>
         </div>
 
-        {/* Logo */}
-        <div className="relative z-10 flex items-center gap-2 text-white animate-fade-in">
-          <div className="w-10 h-10 rounded-xl bg-outdar-red flex items-center justify-center text-2xl shadow-red">
-            🚪
-          </div>
-          <span className="font-display font-extrabold text-xl tracking-tight">
-            OUTDAR
-          </span>
+        {/* Logo — centered, large brand moment */}
+        <div className="relative z-10 flex justify-center animate-fade-in">
+          <img
+            src="/brand/outdar-full-dark.png"
+            alt="OUTDAR"
+            className="h-24 object-contain hover:scale-105 transition-transform"
+            draggable="false"
+          />
         </div>
 
         {/* Quote */}

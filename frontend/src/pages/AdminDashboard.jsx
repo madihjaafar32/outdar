@@ -165,18 +165,28 @@ function AdminDashboard() {
 
       {/* ── Sidebar ── */}
       <aside className="relative z-10 w-56 flex-shrink-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border-r border-gray-200/50 dark:border-slate-700/50 flex flex-col">
-        {/* Logo */}
-        <div className="p-5 border-b border-gray-200/50 dark:border-slate-700/50">
-          <Link to="/home" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-outdar-red flex items-center justify-center text-lg shadow-sm group-hover:scale-110 group-hover:rotate-12 transition-all">
-              🚪
-            </div>
-            <div>
-              <p className="font-display font-extrabold text-sm text-gray-900 dark:text-white">OUTDAR</p>
-              <p className="text-xs text-outdar-red font-semibold">Admin Panel</p>
-            </div>
-          </Link>
-        </div>
+        
+        {/* Logo — uses real brand mark, adapts to theme */}
+<div className="p-5 border-b border-gray-200/50 dark:border-slate-700/50">
+  <Link to="/home" className="flex items-center gap-2 group">
+    <img
+      src="/brand/outdar-mark-light.png"
+      alt="OUTDAR"
+      className="w-10 h-10 object-contain group-hover:scale-110 group-hover:rotate-3 transition-all dark:hidden"
+      draggable="false"
+    />
+    <img
+      src="/brand/outdar-mark-dark.png"
+      alt="OUTDAR"
+      className="w-10 h-10 object-contain group-hover:scale-110 group-hover:rotate-3 transition-all hidden dark:block"
+      draggable="false"
+    />
+    <div>
+      <p className="font-display font-extrabold text-sm text-gray-900 dark:text-white">OUTDAR</p>
+      <p className="text-xs text-outdar-red font-semibold">Admin Panel</p>
+    </div>
+  </Link>
+</div>
 
         {/* Nav */}
         <nav className="flex-1 p-3 space-y-1">
