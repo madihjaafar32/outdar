@@ -10,6 +10,7 @@ import EventChat from "./pages/EventChat.jsx";
 import AIChat from "./pages/AIChat.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import About from "./pages/About.jsx";
+import CreateEvent from "./pages/CreateEvent.jsx";
 
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import BubblesBg from "./components/common/BubblesBg.jsx";
@@ -204,6 +205,15 @@ function App() {
         element={
           <ProtectedRoute>
             <Browse />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/events/create"
+        element={
+          <ProtectedRoute>
+            <CreateEvent />
           </ProtectedRoute>
         }
       />
