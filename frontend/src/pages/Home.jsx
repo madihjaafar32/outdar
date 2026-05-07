@@ -42,6 +42,12 @@ function Home() {
             >
               AI Assistant
             </Link>
+            <Link
+              to="/about"
+              className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-outdar-red hover:bg-outdar-red/5 px-3 py-1.5 rounded-lg transition-all"
+            >
+              About
+            </Link>
             {user?.role === "admin" && (
               <Link
                 to="/admin"

@@ -60,3 +60,36 @@ body {
 [dir="rtl"] body {
   font-family: "Inter", "Tajawal", sans-serif;
 }
+
+/* ── OUTDAR Brand Magic ── */
+/* Subtle pulse + glow on first reveal — door opening to discovery */
+@keyframes outdar-door-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-15deg);
+    filter: drop-shadow(0 0 0 rgba(230, 57, 70, 0));
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+    filter: drop-shadow(0 8px 24px rgba(230, 57, 70, 0.6));
+  }
+  70% {
+    transform: scale(0.95) rotate(-3deg);
+    filter: drop-shadow(0 4px 16px rgba(230, 57, 70, 0.4));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+    filter: drop-shadow(0 0 8px rgba(230, 57, 70, 0.2));
+  }
+}
+
+.outdar-magic-image {
+  animation: outdar-door-reveal 1.4s cubic-bezier(0.34, 1.5, 0.64, 1) both;
+}
+
+/* When the magic trigger wraps the logo, add a subtle glow on hover too */
+.outdar-magic-trigger:hover .outdar-magic-image {
+  animation: outdar-door-reveal 0.8s cubic-bezier(0.34, 1.5, 0.64, 1);
+}

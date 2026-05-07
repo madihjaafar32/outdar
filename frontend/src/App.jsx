@@ -9,6 +9,7 @@ import EventDetail from "./pages/EventDetail.jsx";
 import EventChat from "./pages/EventChat.jsx";
 import AIChat from "./pages/AIChat.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import About from "./pages/About.jsx";
 
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
 import BubblesBg from "./components/common/BubblesBg.jsx";
@@ -35,6 +36,13 @@ function Splash() {
           <ThemeToggle />
 
           <Link
+            to="/about"
+            className="hidden sm:inline-block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-outdar-red transition-colors px-3 py-2"
+          >
+            About
+          </Link>
+
+          <Link
             to="/login"
             className="hidden sm:inline-block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-outdar-red transition-colors px-3 py-2"
           >
@@ -57,6 +65,11 @@ function Splash() {
           <span className="inline-block font-mono text-xs uppercase tracking-widest text-outdar-red bg-outdar-red/10 dark:bg-outdar-red/20 px-3 py-1.5 rounded-full mb-6 font-medium border border-outdar-red/20">
             🇲🇦 Made for Morocco's youth
           </span>
+
+          {/* Brand Magic — door reveal on first visit */}
+          <div className="flex justify-center mb-8">
+            <BrandLogo size="lg" magic={true} to={null} />
+          </div>
 
           <h1 className="font-display font-extrabold text-5xl md:text-7xl tracking-tight leading-[1.05] text-gray-900 dark:text-white mb-6">
             Step outside.
@@ -155,7 +168,11 @@ function Splash() {
             — Discover. Connect. Explore. —
           </p>
           <p className="text-xs text-gray-300 dark:text-gray-600 mt-2">
-            Built with 💙 in Casablanca · OUTDAR © 2026
+            Built with 💙 in Casablanca ·{" "}
+            <Link to="/about" className="hover:text-outdar-red transition-colors underline-offset-2 hover:underline">
+              About
+            </Link>
+            {" "}· OUTDAR © 2026
           </p>
         </div>
       </main>
@@ -168,6 +185,7 @@ function App() {
     <Routes>
       {/* Public routes */}
       <Route path="/" element={<Splash />} />
+      <Route path="/about" element={<About />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
